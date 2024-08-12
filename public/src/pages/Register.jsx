@@ -1,21 +1,13 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import axios from "axios";
 import styled from "styled-components";
 import { useNavigate, Link } from "react-router-dom";
-import Logo from "../assets/logo.svg";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { registerRoute } from "../utils/APIRoutes";
 
 export default function Register() {
   const navigate = useNavigate();
-  const toastOptions = {
-    position: "bottom-right",
-    autoClose: 8000,
-    pauseOnHover: true,
-    draggable: true,
-    theme: "dark",
-  };
   const [values, setValues] = useState({
     username: "",
     email: "",
@@ -27,98 +19,96 @@ export default function Register() {
     if (localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY)) {
       navigate("/");
     }
-  }, []);
+  }, [navigate]);
 
   const handleChange = (event) => {
-    setValues({ ...values, [event.target.name]: event.target.value });
+    const { name, value } = event.target;
+    setValues((prevValues) => ({
+      ...prevValues,
+      [name]: value,
+    }));
   };
 
-  const handleValidation = () => {
+  const handleValidation = useCallback(() => {
     const { password, confirmPassword, username, email } = values;
     if (password !== confirmPassword) {
-      toast.error(
-        "Password and confirm password should be same.",
-        toastOptions
-      );
+      toast.error("Password and confirm password should be the same.");
       return false;
     } else if (username.length < 3) {
-      toast.error(
-        "Username should be greater than 3 characters.",
-        toastOptions
-      );
+      toast.error("Username should be greater than 3 characters.");
       return false;
     } else if (password.length < 8) {
-      toast.error(
-        "Password should be equal or greater than 8 characters.",
-        toastOptions
-      );
+      toast.error("Password should be equal to or greater than 8 characters.");
       return false;
     } else if (email === "") {
-      toast.error("Email is required.", toastOptions);
+      toast.error("Email is required.");
       return false;
     }
-
     return true;
-  };
+  }, [values]);
 
-  const handleSubmit = async (event) => {
+  const handleSubmit = useCallback(async (event) => {
     event.preventDefault();
     if (handleValidation()) {
       const { email, username, password } = values;
-      const { data } = await axios.post(registerRoute, {
-        username,
-        email,
-        password,
-      });
+      try {
+        const { data } = await axios.post(registerRoute, {
+          username,
+          email,
+          password,
+        });
 
-      if (data.status === false) {
-        toast.error(data.msg, toastOptions);
-      }
-      if (data.status === true) {
-        localStorage.setItem(
-          process.env.REACT_APP_LOCALHOST_KEY,
-          JSON.stringify(data.user)
-        );
-        navigate("/");
+        if (!data.status) {
+          toast.error(data.msg);
+        } else {
+          localStorage.setItem(process.env.REACT_APP_LOCALHOST_KEY, JSON.stringify(data.user));
+          navigate("/");
+        }
+      } catch (error) {
+        toast.error("An error occurred during registration. Please try again later.");
+        console.error("Registration error:", error);
       }
     }
-  };
+  }, [values, navigate, handleValidation]);
 
   return (
     <>
       <FormContainer>
-        <form action="" onSubmit={(event) => handleSubmit(event)}>
+        <form onSubmit={handleSubmit}>
           <div className="brand">
-            <img src={Logo} alt="logo" />
-            <h1>snappy</h1>
+            <h1>BuzzChat</h1>
           </div>
           <input
             type="text"
             placeholder="Username"
             name="username"
-            onChange={(e) => handleChange(e)}
+            value={values.username}
+            onChange={handleChange}
           />
           <input
             type="email"
             placeholder="Email"
             name="email"
-            onChange={(e) => handleChange(e)}
+            value={values.email}
+            onChange={handleChange}
           />
           <input
             type="password"
             placeholder="Password"
             name="password"
-            onChange={(e) => handleChange(e)}
+            value={values.password}
+            onChange={handleChange}
           />
           <input
             type="password"
             placeholder="Confirm Password"
             name="confirmPassword"
-            onChange={(e) => handleChange(e)}
+            value={values.confirmPassword}
+            onChange={handleChange}
           />
           <button type="submit">Create User</button>
           <span>
-            Already have an account ? <Link to="/login">Login.</Link>
+            Already have an account? <Link to="/login">Login</Link>
           </span>
         </form>
       </FormContainer>
@@ -135,7 +125,7 @@ const FormContainer = styled.div`
   justify-content: center;
   gap: 1rem;
   align-items: center;
-  background-color: #131324;
+  background-color:  #4B0082;
   .brand {
     display: flex;
     align-items: center;
@@ -156,42 +146,39 @@ const FormContainer = styled.div`
     gap: 2rem;
     background-color: #00000076;
     border-radius: 2rem;
-    padding: 3rem 5rem;
-  }
-  input {
-    background-color: transparent;
-    padding: 1rem;
-    border: 0.1rem solid #4e0eff;
-    border-radius: 0.4rem;
-    color: white;
-    width: 100%;
-    font-size: 1rem;
-    &:focus {
-      border: 0.1rem solid #997af0;
-      outline: none;
+    padding: 2rem 5rem;
+    input {
+      background: transparent;
+      border: 0.1rem solid  #997af0;
+      padding: 1rem;
+      border-radius: 0.4rem;
+      color: white;
+      width: 100%;
+      font-size: 1rem;
+      &:focus {
+        border: 0.1rem solid #FF66B2;
+        outline: none;
+      }
     }
-  }
-  button {
-    background-color: #4e0eff;
-    color: white;
-    padding: 1rem 2rem;
-    border: none;
-    font-weight: bold;
-    cursor: pointer;
-    border-radius: 0.4rem;
-    font-size: 1rem;
-    text-transform: uppercase;
-    &:hover {
-      background-color: #4e0eff;
+    button {
+      background-color:#FF66B2;
+      color: white;
+      border: none;
+      padding: 1rem;
+      border-radius: 0.4rem;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: 0.5s ease-in-out;
+      &:hover {
+        background-color: #FF007F;
+      }
     }
-  }
-  span {
-    color: white;
-    text-transform: uppercase;
-    a {
-      color: #4e0eff;
-      text-decoration: none;
-      font-weight: bold;
+    span {
+      color: white;
+      a {
+        color: #FF66B2;
+        text-decoration: none;
+      }
     }
   }
 `;

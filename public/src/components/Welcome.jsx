@@ -1,27 +1,43 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import Robot from "../assets/robot.gif";
+import Logout from "./Logout";
+
 export default function Welcome() {
   const [userName, setUserName] = useState("");
-  useEffect(async () => {
-    setUserName(
-      await JSON.parse(
-        localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY)
-      ).username
-    );
+
+  useEffect(() => {
+    const fetchUserName = async () => {
+      const storedUser = localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY);
+      if (storedUser) {
+        const parsedUser = JSON.parse(storedUser);
+        if (parsedUser && parsedUser.username) {
+          setUserName(parsedUser.username);
+        }
+      }
+    };
+
+    fetchUserName();
   }, []);
+
   return (
     <Container>
-      <img src={Robot} alt="" />
-      <h1>
-        Welcome, <span>{userName}!</span>
-      </h1>
-      <h3>Please select a chat to Start messaging.</h3>
+      <LogoutWrapper>
+        <Logout />
+      </LogoutWrapper>
+      <Content>
+        <img src={Robot} alt="Welcome Robot" />
+        <h1>
+          Welcome, <span>{userName}!</span>
+        </h1>
+        <h3>Please select a chat to start messaging.</h3>
+      </Content>
     </Container>
   );
 }
 
 const Container = styled.div`
+position: relative;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -32,5 +48,27 @@ const Container = styled.div`
   }
   span {
     color: #4e0eff;
+  }
+`;
+
+const LogoutWrapper = styled.div`
+  position: absolute;
+  top: 1rem; /* Space from the top */
+  right: 1rem; /* Space from the right */
+`;
+
+const Content = styled.div`
+  text-align: center; /* Center-align text */
+  img {
+    height: 20rem; /* Adjust as needed */
+    margin-bottom: 1rem; /* Space between image and text */
+  }
+  span {
+    color: #FF66B2;
+    font-weight: bold; /* Emphasize the username */
+  }
+  h3 {
+    margin-top: 0.5rem; /* Space between the welcome message and prompt */
+    font-weight: normal; /* Use normal weight for the prompt */
   }
 `;

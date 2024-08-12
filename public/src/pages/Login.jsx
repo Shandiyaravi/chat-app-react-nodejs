@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import axios from "axios";
 import styled from "styled-components";
 import { useNavigate, Link } from "react-router-dom";
-import Logo from "../assets/logo.svg";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { loginRoute } from "../utils/APIRoutes";
@@ -10,81 +9,88 @@ import { loginRoute } from "../utils/APIRoutes";
 export default function Login() {
   const navigate = useNavigate();
   const [values, setValues] = useState({ username: "", password: "" });
-  const toastOptions = {
-    position: "bottom-right",
-    autoClose: 8000,
-    pauseOnHover: true,
-    draggable: true,
-    theme: "dark",
-  };
+
   useEffect(() => {
     if (localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY)) {
       navigate("/");
     }
-  }, []);
+  }, [navigate]);
 
   const handleChange = (event) => {
-    setValues({ ...values, [event.target.name]: event.target.value });
+    const { name, value } = event.target;
+    setValues((prevValues) => ({
+      ...prevValues,
+      [name]: value,
+    }));
   };
 
-  const validateForm = () => {
+  const handleValidation = useCallback(() => {
     const { username, password } = values;
-    if (username === "") {
-      toast.error("Email and Password is required.", toastOptions);
-      return false;
-    } else if (password === "") {
-      toast.error("Email and Password is required.", toastOptions);
+    if (username === "" || password === "") {
+      toast.error("Username and Password are required.");
       return false;
     }
     return true;
-  };
+  }, [values]);
 
-  const handleSubmit = async (event) => {
+  const handleSubmit = useCallback(async (event) => {
     event.preventDefault();
-    if (validateForm()) {
+    if (handleValidation()) {
       const { username, password } = values;
-      const { data } = await axios.post(loginRoute, {
-        username,
-        password,
-      });
-      if (data.status === false) {
-        toast.error(data.msg, toastOptions);
-      }
-      if (data.status === true) {
-        localStorage.setItem(
-          process.env.REACT_APP_LOCALHOST_KEY,
-          JSON.stringify(data.user)
-        );
+      const toastOptions = {
+        position: "bottom-right",
+        autoClose: 8000,
+        pauseOnHover: true,
+        draggable: true,
+        theme: "dark",
+      };
+      try {
+        const { data } = await axios.post(loginRoute, {
+          username,
+          password,
+        });
 
-        navigate("/");
+        if (data.status === false) {
+          toast.error(data.msg, toastOptions);
+        } else if (data.status === true) {
+          localStorage.setItem(
+            process.env.REACT_APP_LOCALHOST_KEY,
+            JSON.stringify(data.user)
+          );
+          navigate("/");
+        }
+      } catch (error) {
+        toast.error("An error occurred during login. Please try again later.", toastOptions);
+        console.error("Login error:", error);
       }
     }
-  };
+  }, [values, navigate, handleValidation]);
 
   return (
     <>
       <FormContainer>
-        <form action="" onSubmit={(event) => handleSubmit(event)}>
+        <form onSubmit={handleSubmit}>
           <div className="brand">
-            <img src={Logo} alt="logo" />
-            <h1>snappy</h1>
+            {/* <img src={Logo} alt="logo" /> */}
+            <h1>BuzzChat</h1>
           </div>
           <input
             type="text"
             placeholder="Username"
             name="username"
-            onChange={(e) => handleChange(e)}
-            min="3"
+            value={values.username}
+            onChange={handleChange}
           />
           <input
             type="password"
             placeholder="Password"
             name="password"
-            onChange={(e) => handleChange(e)}
+            value={values.password}
+            onChange={handleChange}
           />
-          <button type="submit">Log In</button>
+          <button type="submit">Login</button>
           <span>
-            Don't have an account ? <Link to="/register">Create One.</Link>
+            Don't have an account? <Link to="/register">Register</Link>
           </span>
         </form>
       </FormContainer>
@@ -101,17 +107,17 @@ const FormContainer = styled.div`
   justify-content: center;
   gap: 1rem;
   align-items: center;
-  background-color: #131324;
+  background-color: #4B0082;
   .brand {
     display: flex;
     align-items: center;
     gap: 1rem;
     justify-content: center;
-    img {
-      height: 5rem;
-    }
+    
     h1 {
       color: white;
+          font-family: 'Montserrat', sans-serif;
+
       text-transform: uppercase;
     }
   }
@@ -122,42 +128,39 @@ const FormContainer = styled.div`
     gap: 2rem;
     background-color: #00000076;
     border-radius: 2rem;
-    padding: 5rem;
-  }
-  input {
-    background-color: transparent;
-    padding: 1rem;
-    border: 0.1rem solid #4e0eff;
-    border-radius: 0.4rem;
-    color: white;
-    width: 100%;
-    font-size: 1rem;
-    &:focus {
+    padding: 2rem 5rem;
+    input {
+      background: transparent;
       border: 0.1rem solid #997af0;
-      outline: none;
+      padding: 1rem;
+      border-radius: 0.4rem;
+      color: white;
+      width: 100%;
+      font-size: 1rem;
+      &:focus {
+        border: 0.1rem solid #FF66B2;
+        outline: none;
+      }
     }
-  }
-  button {
-    background-color: #4e0eff;
-    color: white;
-    padding: 1rem 2rem;
-    border: none;
-    font-weight: bold;
-    cursor: pointer;
-    border-radius: 0.4rem;
-    font-size: 1rem;
-    text-transform: uppercase;
-    &:hover {
-      background-color: #4e0eff;
+    button {
+      background-color: #FF66B2;
+      color: white;
+      border: none;
+      padding: 1rem;
+      border-radius: 0.4rem;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: 0.5s ease-in-out;
+      &:hover {
+        background-color: #FF007F;
+      }
     }
-  }
-  span {
-    color: white;
-    text-transform: uppercase;
-    a {
-      color: #4e0eff;
-      text-decoration: none;
-      font-weight: bold;
+    span {
+      color: white;
+      a {
+        color:#FF66B2 ;
+        text-decoration: none;
+      }
     }
   }
 `;

@@ -11,47 +11,19 @@ export default function ChatContainer({ currentChat, socket }) {
   const scrollRef = useRef();
   const [arrivalMessage, setArrivalMessage] = useState(null);
 
-  useEffect(async () => {
-    const data = await JSON.parse(
-      localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY)
-    );
-    const response = await axios.post(recieveMessageRoute, {
-      from: data._id,
-      to: currentChat._id,
-    });
-    setMessages(response.data);
-  }, [currentChat]);
-
   useEffect(() => {
-    const getCurrentChat = async () => {
-      if (currentChat) {
-        await JSON.parse(
-          localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY)
-        )._id;
+    const fetchMessages = async () => {
+      const user = JSON.parse(localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY));
+      if (user && currentChat) {
+        const response = await axios.post(recieveMessageRoute, {
+          from: user._id,
+          to: currentChat._id,
+        });
+        setMessages(response.data);
       }
     };
-    getCurrentChat();
+    fetchMessages();
   }, [currentChat]);
-
-  const handleSendMsg = async (msg) => {
-    const data = await JSON.parse(
-      localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY)
-    );
-    socket.current.emit("send-msg", {
-      to: currentChat._id,
-      from: data._id,
-      msg,
-    });
-    await axios.post(sendMessageRoute, {
-      from: data._id,
-      to: currentChat._id,
-      message: msg,
-    });
-
-    const msgs = [...messages];
-    msgs.push({ fromSelf: true, message: msg });
-    setMessages(msgs);
-  };
 
   useEffect(() => {
     if (socket.current) {
@@ -59,15 +31,37 @@ export default function ChatContainer({ currentChat, socket }) {
         setArrivalMessage({ fromSelf: false, message: msg });
       });
     }
-  }, []);
+  }, [socket]);
 
   useEffect(() => {
-    arrivalMessage && setMessages((prev) => [...prev, arrivalMessage]);
+    if (arrivalMessage) {
+      setMessages((prev) => [...prev, arrivalMessage]);
+    }
   }, [arrivalMessage]);
 
   useEffect(() => {
     scrollRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
+
+  const handleSendMsg = async (msg) => {
+    const user = JSON.parse(localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY));
+    if (user && currentChat) {
+      socket.current.emit("send-msg", {
+        to: currentChat._id,
+        from: user._id,
+        msg,
+      });
+
+      await axios.post(sendMessageRoute, {
+        from: user._id,
+        to: currentChat._id,
+        message: msg,
+      });
+
+      const newMessages = [...messages, { fromSelf: true, message: msg }];
+      setMessages(newMessages);
+    }
+  };
 
   return (
     <Container>
@@ -94,7 +88,7 @@ export default function ChatContainer({ currentChat, socket }) {
                   message.fromSelf ? "sended" : "recieved"
                 }`}
               >
-                <div className="content ">
+                <div className="content">
                   <p>{message.message}</p>
                 </div>
               </div>
@@ -159,7 +153,7 @@ const Container = styled.div`
         padding: 1rem;
         font-size: 1.1rem;
         border-radius: 1rem;
-        color: #d1d1d1;
+        color: #333333;
         @media screen and (min-width: 720px) and (max-width: 1080px) {
           max-width: 70%;
         }
@@ -168,13 +162,13 @@ const Container = styled.div`
     .sended {
       justify-content: flex-end;
       .content {
-        background-color: #4f04ff21;
+        background-color: #F5F5DC;
       }
     }
     .recieved {
       justify-content: flex-start;
       .content {
-        background-color: #9900ff20;
+        background-color: #F5F5DC;
       }
     }
   }
