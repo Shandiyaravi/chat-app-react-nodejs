@@ -5,4 +5,3 @@
 # Ignore .env files
 /client/.env
 /server/.env
-cg
