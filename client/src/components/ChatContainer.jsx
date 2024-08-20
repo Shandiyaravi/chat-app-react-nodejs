@@ -106,22 +106,27 @@ export default function ChatContainer({ currentChat, socket }) {
 }
 
 const Container = styled.div`
+max-width:100%;
   display: grid;
   grid-template-rows: 15% 70% 15%;
   overflow-y: hidden;
     overflow-x: hidden; 
-  
+    
+    
+ 
   
   .chat-header {
     display: flex;
-    background-color:black;
+     background-color: #1c1c1c;
     justify-content: space-between;
     align-items: center;
-    padding: 2rem 2rem;
+    padding: 2rem 1rem;
+    
+    
     .user-details {
       display: flex;
       align-items: center;
-      gap: 1rem;
+      gap: 0.5rem;
       .avatar {
         img {
           height: 2rem;
@@ -129,6 +134,7 @@ const Container = styled.div`
       }
       .username {
         h3 {
+          font-size:1rem;
           color: white;
           text-transform: uppercase;
         }
@@ -136,17 +142,17 @@ const Container = styled.div`
     }
   }
   .chat-messages {
-  
+    
     padding: 2rem 0.5rem;
     display: flex;
     flex-direction: column;
-    gap: 1rem;
+    gap: 0.5rem;
     overflow: auto;
     &::-webkit-scrollbar {
       width: 0.2rem;
       &-thumb {
         background-color: #ffffff39;
-        width: 0.1rem;
+        width: 0.2rem;
         border-radius: 1rem;
       }
     }
@@ -154,10 +160,10 @@ const Container = styled.div`
       display: flex;
       align-items: center;
       .content {
-        max-width: 40%;
+        max-width: 50%;
         overflow-wrap: break-word;
-        padding: 1rem;
-        font-size: 0.8rem;
+        padding: 0.5rem;
+        font-size: 1rem;
         border-radius: 1rem;
         color: #333333;
         
@@ -175,14 +181,18 @@ const Container = styled.div`
         background-color: #F5F5DC;
       }
     }
-      @media screen and (max-width: 500px) {
+      @media screen and (max-width: 510px) {
+        .username{
+            h3{
+              font-size:0.5rem;
+            }}
         .message {
           display: flex;
           align-items: center;
-      .content {
-        max-width: 40%;
+        .content {
+          max-width: 45%;
         overflow-wrap: break-word;
-        padding: 0.8rem;
+        padding: 0.7rem;
         font-size: 0.8rem;
         border-radius: 1rem;
         color: #333333;

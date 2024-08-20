@@ -51,16 +51,17 @@ export default function ChatInput({ handleSendMsg }) {
 const Container = styled.div`
   display: grid;
   align-items: center;
-  justify-content:center;
-  grid-template-columns: 5% 95%;
-  background-color: #080420;
+  justify-content: center;
+  grid-template-columns: 10% 85%;
+  background-color: black;
   padding: 0 1rem;
-  gap:1rem;
+  gap: 1rem;
   .button-container {
     display: flex;
+    justify-content:center;
     align-items: center;
     color: white;
-    gap: 1rem;
+    
     .emoji {
       position: relative;
       svg {
@@ -110,7 +111,7 @@ const Container = styled.div`
       color: white;
       border: none;
       padding-left: 1rem;
-      font-size: 1.2rem;
+      font-size: 1.3rem;
 
       &::selection {
         background-color: #9a86f3;
@@ -120,18 +121,17 @@ const Container = styled.div`
       }
     }
     button {
-      padding: 0.3rem 2rem;
+      padding: 0.3rem 0.5rem;
       border-radius: 2rem;
       display: flex;
       justify-content: center;
       align-items: center;
       background-color: #9a86f3;
       border: none;
-      @media screen and (max-width: 720px)  {
-
-       
+      
+      @media screen and (max-width: 720px) {
         svg {
-          font-size: 1rem;
+          font-size: 0.5rem;
         }
       }
       svg {

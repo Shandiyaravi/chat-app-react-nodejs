@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
+import logo from "../assets/logo.png"
 
 export default function Contacts({ contacts, changeChat }) {
   const [currentUserName, setCurrentUserName] = useState(undefined);
@@ -33,7 +34,7 @@ export default function Contacts({ contacts, changeChat }) {
       {currentUserImage && currentUserName && (
         <Container>
           <div className="brand">
-            <img src="../assets/logo.png" alt="logo_image" />
+            <img src={logo} alt="logo_image" />
            
           </div>
           <div className="contacts">
@@ -76,27 +77,19 @@ export default function Contacts({ contacts, changeChat }) {
 
 const Container = styled.div`
   display: grid;
-  grid-template-rows: 10% 75% 15%;
+  grid-template-rows: 15% 70% 15%;
   height: 100%;
   overflow: hidden;
-  background-color: #080420;
+   background-color: #1c1c1c;
 
   .brand {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 1rem;
-    padding: 0.5rem;
-    background-color: #1c1c1c; /* Optional: Background color for the brand section */
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background-color: #333333;
 
     img {
-      height: 2rem;
-    }
-
-    h3 {
-      color: white;
-      font-size: 1rem;
-      text-transform: uppercase;
+      height: 2.2rem;
     }
   }
 
@@ -124,21 +117,21 @@ const Container = styled.div`
       display: flex;
       align-items: center;
       padding: 0.5rem 1rem;
-      gap: 0.5rem;
+      gap: 1rem;
       transition: background-color 0.3s ease;
-      
+      text-transform:uppercase;
 
       .avatar {
         img {
           height: 3rem;
           width: 3rem;
-          border-radius: 50%; /* Make avatar images circular */
+          border-radius: 50%; 
         }
       }
 
       .username {
         h3 {
-          font-size: 1.2rem;
+          font-size: 1rem;
           color: white;
         }
       }
@@ -159,14 +152,15 @@ const Container = styled.div`
 
     .avatar {
       img {
-        width: 50px;
-        height: 50px;
+        width: 35px;
+        height: 35px;
         border-radius: 50%; /* Make current user image circular */
       }
     }
 
     .username {
       h2 {
+        font-size:1rem;
         color: white;
         text-transform: uppercase;
       }
@@ -215,6 +209,8 @@ const Container = styled.div`
   }
 
   @media screen and (max-width: 495px) {
+
+    
     .contacts {
       .contact {
         .username {
@@ -238,17 +234,18 @@ const Container = styled.div`
 
       .username {
         h2 {
-          font-size: 0.9rem;
+          font-size: 0.7rem;
         }
       }
     }
 
-    .brand {
-      h3 {
-        font-size: 0.8rem;
-      }
-    }
+    
  @media screen and (max-width: 465px) {
+ .brand {
+      img{
+     
+      height:1.5rem;}
+    }
     .contacts {
       .contact {
         margin: 0 0.6rem;

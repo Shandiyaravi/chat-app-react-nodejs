@@ -5,6 +5,7 @@ import { useNavigate, Link } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { registerRoute } from "../utils/APIRoutes";
+import logo from "../assets/logo.png";
 
 export default function Register() {
   const navigate = useNavigate();
@@ -76,7 +77,7 @@ export default function Register() {
       <FormContainer>
         <form onSubmit={handleSubmit}>
           <div className="brand">
-            <h1>BuzzChat</h1>
+            <img src={logo} alt="logo" />
           </div>
           <input
             type="text"
@@ -120,23 +121,21 @@ export default function Register() {
 const FormContainer = styled.div`
   height: 100vh;
   width: 100vw;
+  max-width: 100%;
   display: flex;
   flex-direction: column;
   justify-content: center;
   gap: 1rem;
   align-items: center;
-  background-color:  #4B0082;
+  background-color: #4b0082;
   .brand {
     display: flex;
     align-items: center;
     gap: 1rem;
     justify-content: center;
     img {
-      height: 5rem;
-    }
-    h1 {
-      color: white;
-      text-transform: uppercase;
+      width: 6rem;
+      height: 3rem;
     }
   }
 
@@ -149,19 +148,19 @@ const FormContainer = styled.div`
     padding: 2rem 5rem;
     input {
       background: transparent;
-      border: 0.1rem solid  #997af0;
+      border: 0.1rem solid #997af0;
       padding: 1rem;
       border-radius: 0.4rem;
       color: white;
       width: 100%;
       font-size: 1rem;
       &:focus {
-        border: 0.1rem solid #FF66B2;
+        border: 0.1rem solid #ff66b2;
         outline: none;
       }
     }
     button {
-      background-color:#FF66B2;
+      background-color: #ff66b2;
       color: white;
       border: none;
       padding: 1rem;
@@ -170,13 +169,13 @@ const FormContainer = styled.div`
       cursor: pointer;
       transition: 0.5s ease-in-out;
       &:hover {
-        background-color: #FF007F;
+        background-color: #ff007f;
       }
     }
     span {
       color: white;
       a {
-        color: #FF66B2;
+        color: #ff66b2;
         text-decoration: none;
       }
     }

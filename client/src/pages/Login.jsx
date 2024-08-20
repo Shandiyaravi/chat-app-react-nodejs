@@ -72,7 +72,7 @@ export default function Login() {
       <FormContainer>
         <form onSubmit={handleSubmit}>
           <div className="brand">
-             {/* <img src={logo} alt="logo" />  */}
+             <img src={logo} alt="logo" />  
             
           </div>
           <input
@@ -115,11 +115,9 @@ const FormContainer = styled.div`
     gap: 1rem;
     justify-content: center;
     
-    h1 {
-      color: white;
-          font-family: 'Montserrat', sans-serif;
-
-      text-transform: uppercase;
+    img{
+    width:6rem;
+    height:3rem;
     }
   }
 

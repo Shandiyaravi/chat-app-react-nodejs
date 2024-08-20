@@ -26,7 +26,7 @@ export default function Welcome() {
         <Logout />
       </LogoutWrapper>
       <Content>
-        <img src={Robot} alt="Welcome Robot" />
+        <img src={Robot} alt="Welcome Robot" /> 
         <h1>
           Welcome, <span>{userName}!</span>
         </h1>
@@ -43,10 +43,14 @@ position: relative;
   align-items: center;
   color: white;
   flex-direction: column;
+  background-color:black;
+  
+  
   img {
     height: 20rem;
   }
   span {
+    text-transform:uppercase;
     color: #4e0eff;
   }
 `;
@@ -58,10 +62,10 @@ const LogoutWrapper = styled.div`
 `;
 
 const Content = styled.div`
-  text-align: center; /* Center-align text */
+  text-align: center;
   img {
-    height: 20rem; /* Adjust as needed */
-    margin-bottom: 1rem; /* Space between image and text */
+    height: 20rem;
+    margin-bottom: 1rem;
   }
   span {
     color: #ff66b2;
@@ -72,10 +76,14 @@ const Content = styled.div`
     font-weight: normal;
   }
   @media screen and (max-width: 500px) {
-    h1{
-    font-size:1.5rem;}
+    img {
+      height: 15rem;
+      margin-bottom: 1rem;
+    }
+    h1 {
+      font-size: 1.5rem;
+    }
     span {
-      
       font-size: 1.5rem;
     }
     h3 {
