@@ -13,7 +13,9 @@ export default function ChatContainer({ currentChat, socket }) {
 
   useEffect(() => {
     const fetchMessages = async () => {
-      const user = JSON.parse(localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY));
+      const user = JSON.parse(
+        localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY)
+      );
       if (user && currentChat) {
         const response = await axios.post(recieveMessageRoute, {
           from: user._id,
@@ -44,7 +46,9 @@ export default function ChatContainer({ currentChat, socket }) {
   }, [messages]);
 
   const handleSendMsg = async (msg) => {
-    const user = JSON.parse(localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY));
+    const user = JSON.parse(
+      localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY)
+    );
     if (user && currentChat) {
       socket.current.emit("send-msg", {
         to: currentChat._id,
@@ -103,35 +107,37 @@ export default function ChatContainer({ currentChat, socket }) {
 
 const Container = styled.div`
   display: grid;
-  grid-template-rows: 10% 80% 10%;
-  gap: 0.1rem;
-  overflow: hidden;
-  @media screen and (min-width: 720px) and (max-width: 1080px) {
-    grid-template-rows: 15% 70% 15%;
-  }
+  grid-template-rows: 15% 70% 15%;
+  overflow-y: hidden;
+    overflow-x: hidden; 
+  
+  
   .chat-header {
     display: flex;
+    background-color:black;
     justify-content: space-between;
     align-items: center;
-    padding: 0 2rem;
+    padding: 2rem 2rem;
     .user-details {
       display: flex;
       align-items: center;
       gap: 1rem;
       .avatar {
         img {
-          height: 3rem;
+          height: 2rem;
         }
       }
       .username {
         h3 {
           color: white;
+          text-transform: uppercase;
         }
       }
     }
   }
   .chat-messages {
-    padding: 1rem 2rem;
+  
+    padding: 2rem 0.5rem;
     display: flex;
     flex-direction: column;
     gap: 1rem;
@@ -151,12 +157,10 @@ const Container = styled.div`
         max-width: 40%;
         overflow-wrap: break-word;
         padding: 1rem;
-        font-size: 1.1rem;
+        font-size: 0.8rem;
         border-radius: 1rem;
         color: #333333;
-        @media screen and (min-width: 720px) and (max-width: 1080px) {
-          max-width: 70%;
-        }
+        
       }
     }
     .sended {
@@ -169,6 +173,20 @@ const Container = styled.div`
       justify-content: flex-start;
       .content {
         background-color: #F5F5DC;
+      }
+    }
+      @media screen and (max-width: 500px) {
+        .message {
+          display: flex;
+          align-items: center;
+      .content {
+        max-width: 40%;
+        overflow-wrap: break-word;
+        padding: 0.8rem;
+        font-size: 0.8rem;
+        border-radius: 1rem;
+        color: #333333;
+        
       }
     }
   }

@@ -94,13 +94,13 @@ const Container = styled.div`
   align-items: center;
   background-color: #997af0;
   .container {
-    height: 85vh;
-    width: 85vw;
+    height: 90vh;
+    width: 90vw;
     background-color: #4B0082;
     display: grid;
-    grid-template-columns: 25% 75%;
+    grid-template-columns: 35% 65%;
     @media screen and (min-width: 720px) and (max-width: 1080px) {
-      grid-template-columns: 35% 65%;
+      grid-template-columns: 40% 60%;
     }
   }
 `;

@@ -51,13 +51,11 @@ export default function ChatInput({ handleSendMsg }) {
 const Container = styled.div`
   display: grid;
   align-items: center;
+  justify-content:center;
   grid-template-columns: 5% 95%;
   background-color: #080420;
-  padding: 0 2rem;
-  @media screen and (min-width: 720px) and (max-width: 1080px) {
-    padding: 0 1rem;
-    gap: 1rem;
-  }
+  padding: 0 1rem;
+  gap:1rem;
   .button-container {
     display: flex;
     align-items: center;
@@ -103,7 +101,7 @@ const Container = styled.div`
     border-radius: 2rem;
     display: flex;
     align-items: center;
-    gap: 2rem;
+    gap: 0.5rem;
     background-color: #ffffff34;
     input {
       width: 90%;
@@ -129,8 +127,9 @@ const Container = styled.div`
       align-items: center;
       background-color: #9a86f3;
       border: none;
-      @media screen and (min-width: 720px) and (max-width: 1080px) {
-        padding: 0.3rem 1rem;
+      @media screen and (max-width: 720px)  {
+
+       
         svg {
           font-size: 1rem;
         }

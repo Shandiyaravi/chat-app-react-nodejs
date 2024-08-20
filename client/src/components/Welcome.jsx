@@ -64,11 +64,22 @@ const Content = styled.div`
     margin-bottom: 1rem; /* Space between image and text */
   }
   span {
-    color: #FF66B2;
-    font-weight: bold; /* Emphasize the username */
+    color: #ff66b2;
+    font-weight: bold;
   }
   h3 {
-    margin-top: 0.5rem; /* Space between the welcome message and prompt */
-    font-weight: normal; /* Use normal weight for the prompt */
+    margin-top: 0.5rem;
+    font-weight: normal;
+  }
+  @media screen and (max-width: 500px) {
+    h1{
+    font-size:1.5rem;}
+    span {
+      
+      font-size: 1.5rem;
+    }
+    h3 {
+      font-size: 0.7rem;
+    }
   }
 `;

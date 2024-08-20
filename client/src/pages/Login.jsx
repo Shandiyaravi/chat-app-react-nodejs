@@ -1,6 +1,7 @@
 import React, { useState, useCallback, useEffect } from "react";
 import axios from "axios";
 import styled from "styled-components";
+import logo from "../assets/logo.png"
 import { useNavigate, Link } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -71,8 +72,8 @@ export default function Login() {
       <FormContainer>
         <form onSubmit={handleSubmit}>
           <div className="brand">
-            {/* <img src={Logo} alt="logo" /> */}
-            <h1>BuzzChat</h1>
+             {/* <img src={logo} alt="logo" />  */}
+            
           </div>
           <input
             type="text"

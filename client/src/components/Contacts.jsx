@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 
-
 export default function Contacts({ contacts, changeChat }) {
   const [currentUserName, setCurrentUserName] = useState(undefined);
   const [currentUserImage, setCurrentUserImage] = useState(undefined);
@@ -9,7 +8,9 @@ export default function Contacts({ contacts, changeChat }) {
 
   useEffect(() => {
     const fetchUserData = async () => {
-      const storedUser = localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY);
+      const storedUser = localStorage.getItem(
+        process.env.REACT_APP_LOCALHOST_KEY
+      );
       if (storedUser) {
         const data = JSON.parse(storedUser);
         if (data && data.username && data.avatarImage) {
@@ -32,13 +33,16 @@ export default function Contacts({ contacts, changeChat }) {
       {currentUserImage && currentUserName && (
         <Container>
           <div className="brand">
-            <h3>Contacts</h3>
+            <img src="../assets/logo.png" alt="logo_image" />
+           
           </div>
           <div className="contacts">
             {contacts.map((contact, index) => (
               <div
                 key={contact._id}
-                className={`contact ${index === currentSelected ? "selected" : ""}`}
+                className={`contact ${
+                  index === currentSelected ? "selected" : ""
+                }`}
                 onClick={() => changeCurrentChat(index, contact)}
               >
                 <div className="avatar">
@@ -73,14 +77,17 @@ export default function Contacts({ contacts, changeChat }) {
 const Container = styled.div`
   display: grid;
   grid-template-rows: 10% 75% 15%;
+  height: 100%;
   overflow: hidden;
   background-color: #080420;
 
   .brand {
     display: flex;
     align-items: center;
-    gap: 1rem;
     justify-content: center;
+    gap: 1rem;
+    padding: 0.5rem;
+    background-color: #1c1c1c; /* Optional: Background color for the brand section */
 
     img {
       height: 2rem;
@@ -88,6 +95,7 @@ const Container = styled.div`
 
     h3 {
       color: white;
+      font-size: 1rem;
       text-transform: uppercase;
     }
   }
@@ -95,8 +103,8 @@ const Container = styled.div`
   .contacts {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    overflow: auto;
+    overflow-y: auto;
+    padding: 1rem;
     gap: 0.8rem;
 
     &::-webkit-scrollbar {
@@ -104,7 +112,6 @@ const Container = styled.div`
 
       &-thumb {
         background-color: #ffffff39;
-        width: 0.1rem;
         border-radius: 1rem;
       }
     }
@@ -113,29 +120,32 @@ const Container = styled.div`
       background-color: #333333;
       min-height: 5rem;
       cursor: pointer;
-      width: 90%;
-      border-radius: 0.2rem;
-      padding: 0.4rem;
+      border-radius: 0.5rem;
       display: flex;
-      gap: 1rem;
       align-items: center;
-      transition: 0.5s ease-in-out;
+      padding: 0.5rem 1rem;
+      gap: 0.5rem;
+      transition: background-color 0.3s ease;
+      
 
       .avatar {
         img {
           height: 3rem;
+          width: 3rem;
+          border-radius: 50%; /* Make avatar images circular */
         }
       }
 
       .username {
         h3 {
+          font-size: 1.2rem;
           color: white;
         }
       }
     }
 
     .selected {
-      background-color: #FF66B2;
+      background-color: #ff66b2;
     }
   }
 
@@ -144,28 +154,104 @@ const Container = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 2rem;
+    gap: 1rem;
+    padding: 1rem;
 
     .avatar {
       img {
-        height: 4rem;
-        max-inline-size: 100%;
+        width: 50px;
+        height: 50px;
+        border-radius: 50%; /* Make current user image circular */
       }
     }
 
     .username {
       h2 {
         color: white;
+        text-transform: uppercase;
+      }
+    }
+  }
+
+  @media screen and (max-width: 720px) {
+    .contacts {
+      padding: 0.5rem;
+
+      .contact {
+        flex-direction: column;
+        gap: 0.2rem;
+
+        .username {
+          h3 {
+            font-size: 1rem;
+          }
+        }
+
+        .avatar {
+          img {
+            width: 30px;
+            height: 30px;
+          }
+        }
       }
     }
 
-    @media screen and (min-width: 720px) and (max-width: 1080px) {
+    .current-user {
       gap: 0.5rem;
+
+      .avatar {
+        img {
+          width: 40px;
+          height: 40px;
+        }
+      }
 
       .username {
         h2 {
           font-size: 1rem;
         }
+      }
+    }
+  }
+
+  @media screen and (max-width: 495px) {
+    .contacts {
+      .contact {
+        .username {
+          h3 {
+            font-size: 0.9rem;
+          }
+        }
+      }
+    }
+
+    .current-user {
+      flex-direction: column;
+      gap: 0.3rem;
+
+      .avatar {
+        img {
+          width: 30px;
+          height: 30px;
+        }
+      }
+
+      .username {
+        h2 {
+          font-size: 0.9rem;
+        }
+      }
+    }
+
+    .brand {
+      h3 {
+        font-size: 0.8rem;
+      }
+    }
+ @media screen and (max-width: 465px) {
+    .contacts {
+      .contact {
+        margin: 0 0.6rem;
       }
     }
   }
