@@ -98,3 +98,62 @@ module.exports.logOut = (req, res, next) => {
     next(ex);
   }
 };
+
+// Block User
+module.exports.blockUser = async (req, res, next) => {
+  try {
+    const { blockerId, blockedId } = req.body;
+
+    const user = await User.findByIdAndUpdate(
+      blockerId,
+      { $addToSet: { blockedUsers: blockedId } }, // $addToSet ensures no duplicates
+      { new: true }
+    );
+
+    return res.json({ status: true, blockedUsers: user.blockedUsers });
+  } catch (ex) {
+    next(ex);
+  }
+};
+
+// Unblock User
+module.exports.unblockUser = async (req, res, next) => {
+  try {
+    const { blockerId, blockedId } = req.body;
+
+    const user = await User.findByIdAndUpdate(
+      blockerId,
+      { $pull: { blockedUsers: blockedId } }, // $pull removes the blockedId from the array
+      { new: true }
+    );
+
+    return res.json({ status: true, blockedUsers: user.blockedUsers });
+  } catch (ex) {
+    next(ex);
+  }
+};
+
+
+module.exports.checkBlockStatus = async (req, res) => {
+  try {
+    const { blockerId, blockedId } = req.body;
+
+    // Ensure both IDs are provided
+    if (!blockerId || !blockedId) {
+      return res
+        .status(400)
+        .json({ msg: "Both blockerId and blockedId are required" });
+    }
+
+    const user = await User.findById(blockerId);
+    if (!user) {
+      return res.status(404).json({ msg: "User not found" });
+    }
+
+    const isBlocked = user.blockedUsers.includes(blockedId);
+    return res.json({ isBlocked });
+  } catch (error) {
+    console.error("Error checking block status:", error);
+    return res.status(500).json({ error: "Server error" });
+  }
+};

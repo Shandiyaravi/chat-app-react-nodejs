@@ -6,6 +6,7 @@ const messageRoutes = require("./routes/messages");
 const app = express();
 const socket = require("socket.io");
 require("dotenv").config();
+const User = require("./models/userModel");
 
 app.use(cors());
 app.use(express.json());
@@ -16,7 +17,7 @@ mongoose
     useUnifiedTopology: true,
   })
   .then(() => {
-    console.log("DB Connetion Successfull");
+    console.log("DB Connection Successful");
   })
   .catch((err) => {
     console.log(err.message);
@@ -46,10 +47,34 @@ io.on("connection", (socket) => {
     onlineUsers.set(userId, socket.id);
   });
 
-  socket.on("send-msg", (data) => {
-    const sendUserSocket = onlineUsers.get(data.to);
-    if (sendUserSocket) {
-      socket.to(sendUserSocket).emit("msg-recieve", data.msg);
+  socket.on("send-msg", async (data) => {
+    try {
+      // Get the sender and receiver details
+      const sender = await User.findById(data.from);
+      const receiver = await User.findById(data.to);
+
+      // Check if the sender is blocked by the receiver or vice versa
+      if (
+        sender.blockedUsers.includes(data.to) ||
+        receiver.blockedUsers.includes(data.from)
+      ) {
+        return; // Do nothing if either user has blocked the other
+      }
+
+      // If the receiver is online, send the message
+      const sendUserSocket = onlineUsers.get(data.to);
+      if (sendUserSocket) {
+        socket.to(sendUserSocket).emit("msg-recieve", data.msg);
+      }
+    } catch (error) {
+      console.error("Error handling message:", error);
     }
   });
+});
+
+const path = require("path");
+app.use(express.static(path.join(__dirname, "../client/build")));
+
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "../client/build", "index.html"));
 });

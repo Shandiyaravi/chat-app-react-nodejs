@@ -4,12 +4,17 @@ import ChatInput from "./ChatInput";
 import Logout from "./Logout";
 import { v4 as uuidv4 } from "uuid";
 import axios from "axios";
-import { sendMessageRoute, recieveMessageRoute } from "../utils/APIRoutes";
+import Modal from "./Modal";
+
+import { sendMessageRoute, recieveMessageRoute,checkBlockStatusRoute,unblock,block } from "../utils/APIRoutes";
 
 export default function ChatContainer({ currentChat, socket }) {
   const [messages, setMessages] = useState([]);
   const scrollRef = useRef();
   const [arrivalMessage, setArrivalMessage] = useState(null);
+  const [isBlocked, setIsBlocked] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [modalMessage, setModalMessage] = useState("");
 
   useEffect(() => {
     const fetchMessages = async () => {
@@ -30,10 +35,12 @@ export default function ChatContainer({ currentChat, socket }) {
   useEffect(() => {
     if (socket.current) {
       socket.current.on("msg-recieve", (msg) => {
-        setArrivalMessage({ fromSelf: false, message: msg });
+        if (!isBlocked) {
+          setArrivalMessage({ fromSelf: false, message: msg });
+        }
       });
     }
-  }, [socket]);
+  }, [socket, isBlocked]);
 
   useEffect(() => {
     if (arrivalMessage) {
@@ -45,27 +52,102 @@ export default function ChatContainer({ currentChat, socket }) {
     scrollRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
+  useEffect(() => {
+    const checkIfBlocked = async () => {
+      const user = JSON.parse(
+        localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY)
+      );
+      if (user && currentChat) {
+        const response = await axios.post(checkBlockStatusRoute, {
+          blockerId: user._id,
+          blockedId: currentChat._id,
+        });
+        setIsBlocked(response.data.isBlocked);
+      }
+    };
+    checkIfBlocked();
+  }, [currentChat]);
+
   const handleSendMsg = async (msg) => {
+    if (isBlocked) {
+      setModalMessage("You cannot send messages to this user as they are blocked.");
+      setModalVisible(true);
+      return;
+    }
+
     const user = JSON.parse(
       localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY)
     );
+
     if (user && currentChat) {
-      socket.current.emit("send-msg", {
-        to: currentChat._id,
-        from: user._id,
-        msg,
-      });
+      try {
+        // Check if the recipient has blocked you
+        const checkResponse = await axios.post(checkBlockStatusRoute, {
+          blockerId: currentChat._id,
+          blockedId: user._id,
+        });
 
-      await axios.post(sendMessageRoute, {
-        from: user._id,
-        to: currentChat._id,
-        message: msg,
-      });
+        if (checkResponse.data.isBlocked) {
+          setModalMessage("You cannot send messages to this user as they have blocked you.");
+          setModalVisible(true);
+          return;
+        }
 
-      const newMessages = [...messages, { fromSelf: true, message: msg }];
-      setMessages(newMessages);
+        // Emit the message via socket
+        socket.current.emit("send-msg", {
+          to: currentChat._id,
+          from: user._id,
+          msg,
+        });
+
+        // Save the message
+        await axios.post(sendMessageRoute, {
+          from: user._id,
+          to: currentChat._id,
+          message: msg,
+        });
+
+        setMessages([...messages, { fromSelf: true, message: msg }]);
+      } catch (error) {
+        console.error("Error sending message:", error);
+      }
     }
   };
+
+  const toggleBlock = async () => {
+  const user = JSON.parse(localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY));
+
+  try {
+    const checkResponse = await axios.post(checkBlockStatusRoute, {
+      blockerId: user._id,
+      blockedId: currentChat._id,
+    });
+
+    if (checkResponse.data.isBlocked) {
+      // Unblock
+      const response = await axios.post(unblock, {
+        blockerId: user._id,
+        blockedId: currentChat._id,
+      });
+      if (response.data.status) {
+        setIsBlocked(false);
+      }
+    } else {
+      // Block
+      const response = await axios.post(block, {
+        blockerId: user._id,
+        blockedId: currentChat._id,
+      });
+      if (response.data.status) {
+        setIsBlocked(true);
+      }
+    }
+  } catch (error) {
+    console.error('Error toggling block status:', error);
+  }
+};
+
+
 
   return (
     <Container>
@@ -81,6 +163,9 @@ export default function ChatContainer({ currentChat, socket }) {
             <h3>{currentChat.username}</h3>
           </div>
         </div>
+        <button onClick={toggleBlock}>
+          {isBlocked ? "Unblock" : "Block"} User
+        </button>
         <Logout />
       </div>
       <div className="chat-messages">
@@ -101,6 +186,12 @@ export default function ChatContainer({ currentChat, socket }) {
         })}
       </div>
       <ChatInput handleSendMsg={handleSendMsg} />
+      {modalVisible && (
+        <Modal
+          message={modalMessage}
+          onClose={() => setModalVisible(false)}
+        />
+      )}
     </Container>
   );
 }
