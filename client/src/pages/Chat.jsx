@@ -10,12 +10,11 @@ import Welcome from "../components/Welcome";
 
 export default function Chat() {
   const navigate = useNavigate();
-  const socket = useRef(null);
+  const socket = useRef();
   const [contacts, setContacts] = useState([]);
   const [currentChat, setCurrentChat] = useState(undefined);
   const [currentUser, setCurrentUser] = useState(undefined);
 
-  // Fetch user and setup WebSocket connection
   useEffect(() => {
     const getUser = async () => {
       const user = localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY);
@@ -30,11 +29,7 @@ export default function Chat() {
 
   useEffect(() => {
     if (currentUser) {
-      socket.current = io(host, {
-        transports: ["websocket"],
-        secure: true,
-      });
-
+      socket.current = io(host);
       socket.current.emit("add-user", currentUser._id);
 
       // Cleanup function to disconnect socket on unmount
@@ -44,13 +39,14 @@ export default function Chat() {
     }
   }, [currentUser]);
 
-  // Fetch contacts
   useEffect(() => {
     const fetchContacts = async () => {
       if (currentUser) {
         if (currentUser.isAvatarImageSet) {
           try {
-            const { data } = await axios.get(`${allUsersRoute}/${currentUser._id}`);
+            const { data } = await axios.get(
+              `${allUsersRoute}/${currentUser._id}`
+            );
             setContacts(data);
           } catch (error) {
             console.error("Error fetching contacts:", error);
@@ -63,7 +59,6 @@ export default function Chat() {
     fetchContacts();
   }, [currentUser, navigate]);
 
-  // Handle chat change
   const handleChatChange = (chat) => {
     setCurrentChat(chat);
   };
@@ -81,7 +76,6 @@ export default function Chat() {
     </Container>
   );
 }
-
 
 const Container = styled.div`
   height: 100vh;
