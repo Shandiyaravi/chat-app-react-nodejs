@@ -36,6 +36,7 @@ export default function ChatContainer({ currentChat, socket }) {
 
     if (currentSocket) {
       currentSocket.on("msg-recieve", (msg) => {
+          console.log("Message received:", msg); 
         if (!isBlocked) {
           setArrivalMessage({ fromSelf: false, message: msg });
         }
@@ -47,7 +48,7 @@ export default function ChatContainer({ currentChat, socket }) {
         currentSocket.off("msg-recieve");
       }
     };
-  }, [isBlocked, socket]); // Include socket as a dependency if it changes
+  }, [isBlocked, socket]); 
 
   // Update messages with the arrivalMessage
   useEffect(() => {
