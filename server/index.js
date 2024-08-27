@@ -17,10 +17,7 @@ const corsOptions = {
   allowedHeaders: ["Content-Type"],
 };
 
-app.use((req, res, next) => {
-  console.log("CORS Headers:", res.getHeaders());
-  next();
-});
+
 app.use(cors(corsOptions));
 app.use(express.json());
 
