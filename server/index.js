@@ -46,7 +46,7 @@ const server = http.createServer(app);
 // Initialize Socket.IO
 const io = socketIo(server, {
   cors: {
-    origin: "https://chat-app-react-nodejs-ymsz.onrender.com", // Correct origin for production
+    origin: "*", // Correct origin for production
     methods: ["GET", "POST"],
     allowedHeaders: ["Content-Type"],
   },
