@@ -11,12 +11,12 @@ const User = require("./models/userModel");
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+// CORS Configuration
 const corsOptions = {
-  origin: "https://chat-app-react-nodejs-ymsz.onrender.com", // Correct origin for production
+  origin: "https://chat-app-react-nodejs-ymsz.onrender.com", // Replace with your frontend URL
   methods: ["GET", "POST"],
   allowedHeaders: ["Content-Type"],
 };
-
 
 app.use(cors(corsOptions));
 app.use(express.json());
@@ -46,7 +46,7 @@ const server = http.createServer(app);
 // Initialize Socket.IO
 const io = socketIo(server, {
   cors: {
-    origin: "*", // Correct origin for production
+    origin: "https://chat-app-react-nodejs-ymsz.onrender.com", // Replace with your frontend URL
     methods: ["GET", "POST"],
     allowedHeaders: ["Content-Type"],
   },
@@ -61,19 +61,16 @@ io.on("connection", (socket) => {
 
   socket.on("send-msg", async (data) => {
     try {
-      // Get the sender and receiver details
       const sender = await User.findById(data.from);
       const receiver = await User.findById(data.to);
 
-      // Check if the sender is blocked by the receiver or vice versa
       if (
         sender.blockedUsers.includes(data.to) ||
         receiver.blockedUsers.includes(data.from)
       ) {
-        return; // Do nothing if either user has blocked the other
+        return;
       }
 
-      // If the receiver is online, send the message
       const sendUserSocket = onlineUsers.get(data.to);
       if (sendUserSocket) {
         socket.to(sendUserSocket).emit("msg-recieve", data.msg);
