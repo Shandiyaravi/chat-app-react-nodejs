@@ -4,9 +4,8 @@ import ChatInput from "./ChatInput";
 import Logout from "./Logout";
 import { v4 as uuidv4 } from "uuid";
 import axios from "axios";
-import Modal from "./Modal";
-
-import { sendMessageRoute, recieveMessageRoute,checkBlockStatusRoute,unblock,block } from "../utils/APIRoutes";
+import Modal from "./Modal"
+import { sendMessageRoute, recieveMessageRoute, checkBlockStatusRoute, unblock, block } from "../utils/APIRoutes";
 
 export default function ChatContainer({ currentChat, socket }) {
   const [messages, setMessages] = useState([]);
@@ -16,11 +15,10 @@ export default function ChatContainer({ currentChat, socket }) {
   const [modalVisible, setModalVisible] = useState(false);
   const [modalMessage, setModalMessage] = useState("");
 
+  // Fetch messages when the currentChat changes
   useEffect(() => {
     const fetchMessages = async () => {
-      const user = JSON.parse(
-        localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY)
-      );
+      const user = JSON.parse(localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY));
       if (user && currentChat) {
         const response = await axios.post(recieveMessageRoute, {
           from: user._id,
@@ -32,31 +30,41 @@ export default function ChatContainer({ currentChat, socket }) {
     fetchMessages();
   }, [currentChat]);
 
+  // Set up socket listeners
   useEffect(() => {
-    if (socket.current) {
-      socket.current.on("msg-recieve", (msg) => {
+    const currentSocket = socket.current;
+
+    if (currentSocket) {
+      currentSocket.on("msg-recieve", (msg) => {
         if (!isBlocked) {
           setArrivalMessage({ fromSelf: false, message: msg });
         }
       });
     }
-  }, [socket, isBlocked]);
 
+    return () => {
+      if (currentSocket) {
+        currentSocket.off("msg-recieve");
+      }
+    };
+  }, [isBlocked, socket]); // Include socket as a dependency if it changes
+
+  // Update messages with the arrivalMessage
   useEffect(() => {
     if (arrivalMessage) {
       setMessages((prev) => [...prev, arrivalMessage]);
     }
   }, [arrivalMessage]);
 
+  // Scroll to the bottom of the messages
   useEffect(() => {
     scrollRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
+  // Check if the user is blocked or blocked by the current chat
   useEffect(() => {
     const checkIfBlocked = async () => {
-      const user = JSON.parse(
-        localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY)
-      );
+      const user = JSON.parse(localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY));
       if (user && currentChat) {
         const response = await axios.post(checkBlockStatusRoute, {
           blockerId: user._id,
@@ -68,6 +76,7 @@ export default function ChatContainer({ currentChat, socket }) {
     checkIfBlocked();
   }, [currentChat]);
 
+  // Handle sending messages
   const handleSendMsg = async (msg) => {
     if (isBlocked) {
       setModalMessage("You cannot send messages to this user as they are blocked.");
@@ -75,9 +84,7 @@ export default function ChatContainer({ currentChat, socket }) {
       return;
     }
 
-    const user = JSON.parse(
-      localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY)
-    );
+    const user = JSON.parse(localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY));
 
     if (user && currentChat) {
       try {
@@ -114,38 +121,40 @@ export default function ChatContainer({ currentChat, socket }) {
     }
   };
 
+  // Toggle block status
   const toggleBlock = async () => {
-  const user = JSON.parse(localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY));
+    const user = JSON.parse(localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY));
 
-  try {
-    const checkResponse = await axios.post(checkBlockStatusRoute, {
-      blockerId: user._id,
-      blockedId: currentChat._id,
-    });
-
-    if (checkResponse.data.isBlocked) {
-      // Unblock
-      const response = await axios.post(unblock, {
+    try {
+      const checkResponse = await axios.post(checkBlockStatusRoute, {
         blockerId: user._id,
         blockedId: currentChat._id,
       });
-      if (response.data.status) {
-        setIsBlocked(false);
+
+      if (checkResponse.data.isBlocked) {
+        // Unblock
+        const response = await axios.post(unblock, {
+          blockerId: user._id,
+          blockedId: currentChat._id,
+        });
+        if (response.data.status) {
+          setIsBlocked(false);
+        }
+      } else {
+        // Block
+        const response = await axios.post(block, {
+          blockerId: user._id,
+          blockedId: currentChat._id,
+        });
+        if (response.data.status) {
+          setIsBlocked(true);
+        }
       }
-    } else {
-      // Block
-      const response = await axios.post(block, {
-        blockerId: user._id,
-        blockedId: currentChat._id,
-      });
-      if (response.data.status) {
-        setIsBlocked(true);
-      }
+    } catch (error) {
+      console.error('Error toggling block status:', error);
     }
-  } catch (error) {
-    console.error('Error toggling block status:', error);
-  }
-};
+  };
+
 
 
 
