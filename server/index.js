@@ -12,14 +12,15 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 const corsOptions = {
-  origin: [
-    "http://localhost:3000",
-    "https://chat-app-react-nodejs-ymsz.onrender.com",
-  ],
+  origin: "https://chat-app-react-nodejs-ymsz.onrender.com", // Correct origin for production
   methods: ["GET", "POST"],
   allowedHeaders: ["Content-Type"],
 };
 
+app.use((req, res, next) => {
+  console.log("CORS Headers:", res.getHeaders());
+  next();
+});
 app.use(cors(corsOptions));
 app.use(express.json());
 
@@ -48,10 +49,7 @@ const server = http.createServer(app);
 // Initialize Socket.IO
 const io = socketIo(server, {
   cors: {
-    origin: [
-      "http://localhost:3000",
-      "https://chat-app-react-nodejs-ymsz.onrender.com",
-    ],
+    origin: "https://chat-app-react-nodejs-ymsz.onrender.com", // Correct origin for production
     methods: ["GET", "POST"],
     allowedHeaders: ["Content-Type"],
   },
