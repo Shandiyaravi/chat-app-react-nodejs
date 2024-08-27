@@ -53,6 +53,7 @@ const io = socketIo(server, {
       "https://chat-app-react-nodejs-ymsz.onrender.com",
     ],
     methods: ["GET", "POST"],
+    allowedHeaders: ["Content-Type"],
   },
 });
 
