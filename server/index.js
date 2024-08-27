@@ -11,7 +11,6 @@ const User = require("./models/userModel");
 app.use(
   cors({
     origin: [
-      "http://localhost:3000",
       "https://chat-app-react-nodejs-ymsz.onrender.com",
     ],
     credentials: true,
@@ -44,7 +43,6 @@ const server = app.listen(process.env.PORT, () =>
 const io = socket(server, {
   cors: {
     origin: [
-      "http://localhost:3000",
       "https://chat-app-react-nodejs-ymsz.onrender.com",
     ],
     credentials: true,
