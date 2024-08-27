@@ -4,18 +4,23 @@ const mongoose = require("mongoose");
 const authRoutes = require("./routes/auth");
 const messageRoutes = require("./routes/messages");
 const app = express();
-const socket = require("socket.io");
+const http = require("http");
+const socketIo = require("socket.io");
 require("dotenv").config();
 const User = require("./models/userModel");
 
-app.use(
-  cors({
-    origin: [
-      "https://chat-app-react-nodejs-ymsz.onrender.com",
-    ],
-    credentials: true,
-  })
-);
+const PORT = process.env.PORT || 5000;
+
+const corsOptions = {
+  origin: [
+    "http://localhost:3000",
+    "https://chat-app-react-nodejs-ymsz.onrender.com",
+  ],
+  methods: ["GET", "POST"],
+  allowedHeaders: ["Content-Type"],
+};
+
+app.use(cors(corsOptions));
 app.use(express.json());
 
 mongoose
@@ -37,15 +42,19 @@ app.get("/ping", (_req, res) => {
 app.use("/api/auth", authRoutes);
 app.use("/api/messages", messageRoutes);
 
-const server = app.listen(process.env.PORT, () =>
-  console.log(`Server started on ${process.env.PORT}`)
-);
-const io = socket(server, {
+server.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
+});
+
+const server = http.createServer(app);
+
+const io = socketIo(server, {
   cors: {
     origin: [
+      "http://localhost:3000",
       "https://chat-app-react-nodejs-ymsz.onrender.com",
     ],
-    credentials: true,
+    methods: ["GET", "POST"],
   },
 });
 
