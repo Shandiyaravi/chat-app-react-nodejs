@@ -1,4 +1,7 @@
-export const host = "wss://chat-app-react-nodejs-1.onrender.com";
+export const socketHost = "wss://chat-app-react-nodejs-1.onrender.com";
+
+// HTTP API URLs
+export const host = "https://chat-app-react-nodejs-1.onrender.com";
 export const loginRoute = `${host}/api/auth/login`;
 export const registerRoute = `${host}/api/auth/register`;
 export const logoutRoute = `${host}/api/auth/logout`;
@@ -9,5 +12,3 @@ export const setAvatarRoute = `${host}/api/auth/setavatar`;
 export const checkBlockStatusRoute = `${host}/api/auth/check-block-status`;
 export const block = `${host}/api/auth/blockUser`;
 export const unblock = `${host}/api/auth/unblockUser`;
-
-
