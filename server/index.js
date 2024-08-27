@@ -3,12 +3,12 @@ const cors = require("cors");
 const mongoose = require("mongoose");
 const authRoutes = require("./routes/auth");
 const messageRoutes = require("./routes/messages");
-const app = express();
 const http = require("http");
 const socketIo = require("socket.io");
 require("dotenv").config();
 const User = require("./models/userModel");
 
+const app = express();
 const PORT = process.env.PORT || 5000;
 
 const corsOptions = {
@@ -42,12 +42,10 @@ app.get("/ping", (_req, res) => {
 app.use("/api/auth", authRoutes);
 app.use("/api/messages", messageRoutes);
 
-server.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-});
-
+// Create HTTP server
 const server = http.createServer(app);
 
+// Initialize Socket.IO
 const io = socketIo(server, {
   cors: {
     origin: [
@@ -90,9 +88,15 @@ io.on("connection", (socket) => {
   });
 });
 
+// Serve static files from the client build directory
 const path = require("path");
 app.use(express.static(path.join(__dirname, "../client/build")));
 
 app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "../client/build", "index.html"));
+});
+
+// Start the server
+server.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
 });
