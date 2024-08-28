@@ -3,10 +3,12 @@ import { useNavigate } from "react-router-dom";
 import { BiPowerOff } from "react-icons/bi";
 import styled from "styled-components";
 import axios from "axios";
-import { logoutRoute } from "../utils/APIRoutes";
+
 
 export default function Logout() {
   const navigate = useNavigate();
+  const apiUrl = process.env.REACT_APP_API_URL;
+  const logoutRoute = `${apiUrl}/api/auth/logout`;
 
   const handleClick = async () => {
     try {

@@ -6,7 +6,7 @@ import loader from "../assets/loader.webp";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom";
-import { setAvatarRoute } from "../utils/APIRoutes";
+
 
 export default function SetAvatar() {
   const api = `https://api.multiavatar.com/4645646`;
@@ -14,6 +14,8 @@ export default function SetAvatar() {
   const [avatars, setAvatars] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedAvatar, setSelectedAvatar] = useState(undefined);
+  const apiUrl = process.env.REACT_APP_API_URL;
+  const setAvatarRoute = `${apiUrl}/api/auth/setavatar`;
 
   const toastOptions = {
     position: "bottom-right",
