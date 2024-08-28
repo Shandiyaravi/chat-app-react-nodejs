@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import axios from "axios";
-import { Buffer } from "buffer";
 import loader from "../assets/loader.webp";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -15,7 +14,7 @@ export default function SetAvatar() {
   const [isLoading, setIsLoading] = useState(true);
   const [selectedAvatar, setSelectedAvatar] = useState(undefined);
   const apiUrl = process.env.REACT_APP_API_URL;
-  const setAvatarRoute = `${apiUrl}/api/auth/setavatar`;
+  
 
   const toastOptions = {
     position: "bottom-right",
@@ -36,8 +35,8 @@ export default function SetAvatar() {
       toast.error("Please select an avatar", toastOptions);
     } else {
       const user = JSON.parse(localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY));
-
-      const { data } = await axios.post(`${setAvatarRoute}/${user._id}`, {
+      const setAvatarRoute = `${apiUrl}/api/auth/setavatar/${user._id}`;
+      const { data } = await axios.post(setAvatarRoute, {
         image: avatars[selectedAvatar],
       });
 
@@ -59,9 +58,8 @@ export default function SetAvatar() {
     const fetchAvatars = async () => {
       const data = [];
       for (let i = 0; i < 4; i++) {
-        const image = await axios.get(`${api}/${Math.round(Math.random() * 1000)}`);
-        const buffer = new Buffer(image.data);
-        data.push(buffer.toString("base64"));
+        const response = await axios.get(`${api}/${Math.round(Math.random() * 1000)}`);
+        data.push(response.data);
       }
       setAvatars(data);
       setIsLoading(false);

@@ -18,6 +18,7 @@ const io = socketIo(server, {
   cors: {
     origin: process.env.REACT_APP_API_URL,
     methods: ["GET", "POST"],
+    transports: ["websocket", "polling"],
   },
 });
 

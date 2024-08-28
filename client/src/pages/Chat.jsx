@@ -14,7 +14,7 @@ export default function Chat() {
   const [currentChat, setCurrentChat] = useState(undefined);
   const [currentUser, setCurrentUser] = useState(undefined);
   const apiUrl = process.env.REACT_APP_API_URL;
-  const allUsersRoute = `${apiUrl}/api/auth/allusers`;
+  const allUsersRoute = `${apiUrl}/api/auth/allusers/${currentUser._id}`;
 
   useEffect(() => {
     const getUser = async () => {
@@ -46,8 +46,8 @@ export default function Chat() {
       if (currentUser) {
         if (currentUser.isAvatarImageSet) {
           try {
-            console.log("Fetching contacts from:", `${allUsersRoute}/${currentUser._id}`);
-            const { data } = await axios.get(`${allUsersRoute}/${currentUser._id}`);
+            console.log("Fetching contacts from:", allUsersRoute);
+            const { data } = await axios.get(allUsersRoute);
             setContacts(data);
           } catch (error) {
             console.error("Error fetching contacts:", error);
