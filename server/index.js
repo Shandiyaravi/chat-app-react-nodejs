@@ -12,15 +12,16 @@ const path = require("path");
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-const CLIENT_URL = process.env.REACT_APP_API_URL;
 
-app.use(
-  cors({
-    origin: CLIENT_URL,
+const server = http.createServer(app);
+const io = socketIo(server, {
+  cors: {
+    origin: process.env.REACT_APP_API_URL,
     methods: ["GET", "POST"],
-    allowedHeaders: ["Content-Type"],
-  })
-);
+  },
+});
+
+app.use(cors());
 app.use(express.json());
 
 mongoose
@@ -35,15 +36,7 @@ app.get("/ping", (_req, res) => res.json({ msg: "Ping Successful" }));
 app.use("/api/auth", authRoutes);
 app.use("/api/messages", messageRoutes);
 
-// Create HTTP server and initialize Socket.IO
-const server = http.createServer(app);
-const io = socketIo(server, {
-  cors: {
-    origin: CLIENT_URL,
-    methods: ["GET", "POST"],
-    allowedHeaders: ["Content-Type"],
-  },
-});
+
 
 global.onlineUsers = new Map();
 io.on("connection", (socket) => {

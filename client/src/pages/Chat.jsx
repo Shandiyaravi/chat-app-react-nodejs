@@ -30,22 +30,21 @@ export default function Chat() {
 
   useEffect(() => {
     if (currentUser) {
-      console.log("Connecting to socket server at:", apiUrl); 
-      socket.current = io(apiUrl);
+      
+      socket.current = io(process.env.REACT_APP_API_URL);
       socket.current.emit("add-user", currentUser._id);
-
       return () => {
         socket.current.disconnect();
       };
     }
-  }, [currentUser, apiUrl]);
+  }, [currentUser]);
 
   useEffect(() => {
     const fetchContacts = async () => {
       if (currentUser) {
         if (currentUser.isAvatarImageSet) {
           try {
-            console.log("Fetching contacts from:", `${allUsersRoute}/${currentUser._id}`); 
+            console.log("Fetching contacts from:", `${allUsersRoute}/${currentUser._id}`);
             const { data } = await axios.get(`${allUsersRoute}/${currentUser._id}`);
             setContacts(data);
           } catch (error) {
@@ -76,12 +75,7 @@ export default function Chat() {
     </Container>
   );
 }
-
-
-
-
-
-
+  
 const Container = styled.div`
   height: 100vh;
   width: 100vw;
