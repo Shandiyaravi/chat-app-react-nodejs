@@ -13,7 +13,7 @@ export default function Chat() {
   const [contacts, setContacts] = useState([]);
   const [currentChat, setCurrentChat] = useState(undefined);
   const [currentUser, setCurrentUser] = useState(undefined);
-  const apiUrl = process.env.REACT_APP_API_URL;
+  
   
 
   useEffect(() => {
@@ -44,6 +44,7 @@ export default function Chat() {
   useEffect(() => {
     const fetchContacts = async () => {
       if (currentUser) {
+        const apiUrl = process.env.REACT_APP_API_URL;
         const allUsersRoute = `${apiUrl}/api/auth/allusers/${currentUser._id}`;
         if (currentUser.isAvatarImageSet) {
           try {
@@ -59,7 +60,7 @@ export default function Chat() {
       }
     };
     fetchContacts();
-  }, [currentUser, navigate,apiUrl]);
+  }, [currentUser, navigate]);
 
   const handleChatChange = (chat) => {
     setCurrentChat(chat);
