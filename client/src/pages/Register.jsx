@@ -14,8 +14,8 @@ export default function Register() {
     password: "",
     confirmPassword: "",
   });
-  const apiUrl = process.env.REACT_APP_API_URL;
-  const registerRoute = `${apiUrl}/api/auth/register`;
+  
+  const registerRoute = `${process.env.REACT_APP_API_URL}/api/auth/register`;
 
   useEffect(() => {
     if (localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY)) {

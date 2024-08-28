@@ -14,12 +14,11 @@ export default function ChatContainer({ currentChat, socket }) {
   const [isBlocked, setIsBlocked] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [modalMessage, setModalMessage] = useState("");
-  const apiUrl = process.env.REACT_APP_API_URL;
-  const sendMessageRoute = `${apiUrl}/api/messages/addmsg`;
-  const recieveMessageRoute = `${apiUrl}/api/messages/getmsg`;
-  const checkBlockStatusRoute = `${apiUrl}/api/auth/check-block-status`;
-  const block = `${apiUrl}/api/auth/blockUser`;
- const unblock = `${apiUrl}/api/auth/unblockUser`;
+  const sendMessageRoute = `${process.env.REACT_APP_API_URL}/api/messages/addmsg`;
+  const recieveMessageRoute = `${process.env.REACT_APP_API_URL}/api/messages/getmsg`;
+  const checkBlockStatusRoute = `${process.env.REACT_APP_API_URL}/api/auth/check-block-status`;
+  const block = `${process.env.REACT_APP_API_URL}/api/auth/blockUser`;
+ const unblock = `${process.env.REACT_APP_API_URL}/api/auth/unblockUser`;
 
 
 

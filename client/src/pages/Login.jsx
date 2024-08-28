@@ -9,8 +9,7 @@ import "react-toastify/dist/ReactToastify.css";
 export default function Login() {
   const navigate = useNavigate();
   const [values, setValues] = useState({ username: "", password: "" });
-  const apiUrl = process.env.REACT_APP_API_URL;
-  const loginRoute = `${apiUrl}/api/auth/login`;
+  const loginRoute = `${process.env.REACT_APP_API_URL}/api/auth/login`;
 
   useEffect(() => {
     if (localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY)) {

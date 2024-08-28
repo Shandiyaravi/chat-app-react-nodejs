@@ -7,7 +7,7 @@ import axios from "axios";
 
 export default function Logout() {
   const navigate = useNavigate();
-  const apiUrl = process.env.REACT_APP_API_URL;
+  
   
 
   const handleClick = async () => {
@@ -17,7 +17,7 @@ export default function Logout() {
         console.log("No user found in localStorage");
         throw new Error("User not found.");
       }
-      const logoutRoute = `${apiUrl}/api/auth/logout/${user._id}`;
+      const logoutRoute = `${process.env.REACT_APP_API_URL}/api/auth/logout/${user._id}`;
       const response = await axios.get(logoutRoute);
       console.log("Logout response:", response);
       

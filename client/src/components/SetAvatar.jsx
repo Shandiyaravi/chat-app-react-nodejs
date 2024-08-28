@@ -13,7 +13,7 @@ export default function SetAvatar() {
   const [avatars, setAvatars] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedAvatar, setSelectedAvatar] = useState(undefined);
-  const apiUrl = process.env.REACT_APP_API_URL;
+  
   
 
   const toastOptions = {
@@ -35,7 +35,7 @@ export default function SetAvatar() {
       toast.error("Please select an avatar", toastOptions);
     } else {
       const user = JSON.parse(localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY));
-      const setAvatarRoute = `${apiUrl}/api/auth/setavatar/${user._id}`;
+      const setAvatarRoute = `${process.env.REACT_APP_API_URL}/api/auth/setavatar/${user._id}`;
       const { data } = await axios.post(setAvatarRoute, {
         image: avatars[selectedAvatar],
       });
