@@ -93,11 +93,7 @@ io.on("connection", (socket) => {
   });
 });
 
-// Serve static files from the React client build directory
-app.use(express.static(path.join(__dirname, "../client/build")));
-app.get("*", (req, res) =>
-  res.sendFile(path.join(__dirname, "../client/build", "index.html"))
-);
+
 
 // Start server
 server.listen(PORT, () => {
