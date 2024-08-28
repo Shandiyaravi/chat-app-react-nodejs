@@ -4,7 +4,6 @@ import styled from "styled-components";
 import { useNavigate, Link } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { registerRoute } from "../utils/APIRoutes";
 import logo from "../assets/logo.png";
 
 export default function Register() {
@@ -15,6 +14,8 @@ export default function Register() {
     password: "",
     confirmPassword: "",
   });
+  const apiUrl = process.env.REACT_APP_API_URL;
+  const registerRoute = `${apiUrl}/api/auth/register`;
 
   useEffect(() => {
     if (localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY)) {
@@ -70,7 +71,7 @@ export default function Register() {
         console.error("Registration error:", error);
       }
     }
-  }, [values, navigate, handleValidation]);
+  }, [values, navigate, handleValidation,registerRoute]);
 
   return (
     <>

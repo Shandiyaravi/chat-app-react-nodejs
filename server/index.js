@@ -12,7 +12,7 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 const CLIENT_URL = process.env.REACT_APP_API_URL;
-// CORS Configuration
+
 const corsOptions = {
   origin: CLIENT_URL,
   methods: ["GET", "POST"],

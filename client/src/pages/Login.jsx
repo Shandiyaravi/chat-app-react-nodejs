@@ -5,11 +5,13 @@ import logo from "../assets/logo.png"
 import { useNavigate, Link } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { loginRoute } from "../utils/APIRoutes";
+
 
 export default function Login() {
   const navigate = useNavigate();
   const [values, setValues] = useState({ username: "", password: "" });
+  const apiUrl = process.env.REACT_APP_API_URL;
+  const loginRoute = `${apiUrl}/api/auth/login`;
 
   useEffect(() => {
     if (localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY)) {
@@ -46,6 +48,7 @@ export default function Login() {
         theme: "dark",
       };
       try {
+        console.log('Login URL:', loginRoute); // Debug log
         const { data } = await axios.post(loginRoute, {
           username,
           password,
@@ -65,7 +68,7 @@ export default function Login() {
         console.error("Login error:", error);
       }
     }
-  }, [values, navigate, handleValidation]);
+  }, [values, navigate, handleValidation,loginRoute]);
 
   return (
     <>
