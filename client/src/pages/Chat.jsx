@@ -30,8 +30,9 @@ export default function Chat() {
 
   useEffect(() => {
     if (currentUser) {
-      
-      socket.current = io(process.env.REACT_APP_API_URL);
+      const apiUrl = process.env.REACT_APP_API_URL;
+      console.log("API URL:", apiUrl); // Debugging line
+      socket.current = io(apiUrl);
       socket.current.emit("add-user", currentUser._id);
       return () => {
         if (socket.current) {
@@ -46,6 +47,7 @@ export default function Chat() {
       if (currentUser) {
         const apiUrl = process.env.REACT_APP_API_URL;
         const allUsersRoute = `${apiUrl}/api/auth/allusers/${currentUser._id}`;
+        console.log("Fetching contacts from:", allUsersRoute); 
         if (currentUser.isAvatarImageSet) {
           try {
             console.log("Fetching contacts from:", allUsersRoute);
