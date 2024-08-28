@@ -11,9 +11,10 @@ const User = require("./models/userModel");
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+const CLIENT_URL = process.env.REACT_APP_API_URL;
 // CORS Configuration
 const corsOptions = {
-  origin: "https://chat-app-react-nodejs-ymsz.onrender.com", 
+  origin: CLIENT_URL,
   methods: ["GET", "POST"],
   allowedHeaders: ["Content-Type"],
 };
@@ -46,7 +47,7 @@ const server = http.createServer(app);
 // Initialize Socket.IO
 const io = socketIo(server, {
   cors: {
-    origin: "https://chat-app-react-nodejs-ymsz.onrender.com", // Replace with your frontend URL
+    origin: CLIENT_URL,
     methods: ["GET", "POST"],
     allowedHeaders: ["Content-Type"],
   },
