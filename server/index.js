@@ -11,42 +11,36 @@ const path = require("path");
 
 const app = express();
 const PORT = process.env.PORT || 5000;
-// Test route to verify server is up
-app.get("/ping", (_req, res) => res.json({ msg: "Ping Successful" }));
 
-// API routes
-app.use("/api/auth", authRoutes);
-app.use("/api/messages", messageRoutes);
 
-const server = http.createServer(app);
-const io = socketIo(server, {
-  cors: {
-    origin: process.env.REACT_APP_API_URL,
-    methods: ["GET", "POST"],
-    credentials: true,
-  },
-});
-
-// CORS Middleware Configuration
 app.use(
   cors({
-    origin: process.env.REACT_APP_API_URL,
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    credentials: true,
-  })
-);
-
-// Handle preflight requests
-app.options(
-  "*",
-  cors({
-    origin: process.env.REACT_APP_API_URL,
+    origin: process.env.REACT_APP_API_URL, 
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     credentials: true,
   })
 );
 
 app.use(express.json());
+
+// API routes
+app.use("/api/auth", authRoutes);
+app.use("/api/messages", messageRoutes);
+
+// Test route to verify server is up
+app.get("/ping", (_req, res) => res.json({ msg: "Ping Successful" }));
+
+const server = http.createServer(app);
+const io = socketIo(server, {
+  cors: {
+    origin: process.env.REACT_APP_API_URL, 
+    methods: ["GET", "POST"],
+    credentials: true,
+  },
+});
+
+
+
 
 // Database connection
 mongoose
