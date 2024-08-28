@@ -11,6 +11,12 @@ const path = require("path");
 
 const app = express();
 const PORT = process.env.PORT || 5000;
+// Test route to verify server is up
+app.get("/ping", (_req, res) => res.json({ msg: "Ping Successful" }));
+
+// API routes
+app.use("/api/auth", authRoutes);
+app.use("/api/messages", messageRoutes);
 
 const server = http.createServer(app);
 const io = socketIo(server, {
@@ -51,12 +57,7 @@ mongoose
   .then(() => console.log("DB Connection Successful"))
   .catch((err) => console.error(err.message));
 
-// Test route to verify server is up
-app.get("/ping", (_req, res) => res.json({ msg: "Ping Successful" }));
 
-// API routes
-app.use("/api/auth", authRoutes);
-app.use("/api/messages", messageRoutes);
 
 // Handle WebSocket connections
 global.onlineUsers = new Map();
