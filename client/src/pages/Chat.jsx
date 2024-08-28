@@ -30,7 +30,10 @@ export default function Chat() {
 
   useEffect(() => {
     if (currentUser) {
-      socket.current = io(apiUrl);
+      console.log("Connecting to socket server at:", apiUrl); // Debugging socket connection
+      socket.current = io(apiUrl, {
+        path: '/socket.io/', // Adjust this if your server uses a different path
+      });
       socket.current.emit("add-user", currentUser._id);
 
       // Cleanup function to disconnect socket on unmount
@@ -38,16 +41,15 @@ export default function Chat() {
         socket.current.disconnect();
       };
     }
-  }, [currentUser,apiUrl]);
+  }, [currentUser, apiUrl]);
 
   useEffect(() => {
     const fetchContacts = async () => {
       if (currentUser) {
         if (currentUser.isAvatarImageSet) {
           try {
-            const { data } = await axios.get(
-              `${allUsersRoute}/${currentUser._id}`
-            );
+            console.log("Fetching contacts from:", `${allUsersRoute}/${currentUser._id}`); // Debugging endpoint
+            const { data } = await axios.get(`${allUsersRoute}/${currentUser._id}`);
             setContacts(data);
           } catch (error) {
             console.error("Error fetching contacts:", error);
@@ -58,7 +60,7 @@ export default function Chat() {
       }
     };
     fetchContacts();
-  }, [currentUser, navigate,allUsersRoute]);
+  }, [currentUser, navigate, allUsersRoute]);
 
   const handleChatChange = (chat) => {
     setCurrentChat(chat);
@@ -77,6 +79,8 @@ export default function Chat() {
     </Container>
   );
 }
+
+
 
 const Container = styled.div`
   height: 100vh;
