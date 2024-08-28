@@ -30,13 +30,10 @@ export default function Chat() {
 
   useEffect(() => {
     if (currentUser) {
-      console.log("Connecting to socket server at:", apiUrl); // Debugging socket connection
-      socket.current = io(apiUrl, {
-        path: '/socket.io/', // Adjust this if your server uses a different path
-      });
+      console.log("Connecting to socket server at:", apiUrl); 
+      socket.current = io(apiUrl);
       socket.current.emit("add-user", currentUser._id);
 
-      // Cleanup function to disconnect socket on unmount
       return () => {
         socket.current.disconnect();
       };
@@ -48,7 +45,7 @@ export default function Chat() {
       if (currentUser) {
         if (currentUser.isAvatarImageSet) {
           try {
-            console.log("Fetching contacts from:", `${allUsersRoute}/${currentUser._id}`); // Debugging endpoint
+            console.log("Fetching contacts from:", `${allUsersRoute}/${currentUser._id}`); 
             const { data } = await axios.get(`${allUsersRoute}/${currentUser._id}`);
             setContacts(data);
           } catch (error) {
@@ -79,6 +76,9 @@ export default function Chat() {
     </Container>
   );
 }
+
+
+
 
 
 
