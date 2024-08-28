@@ -12,10 +12,9 @@ const path = require("path");
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-
 app.use(
   cors({
-    origin: process.env.REACT_APP_CLIENT_URL, 
+    origin: process.env.REACT_APP_CLIENT_URL,
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     credentials: true,
   })
@@ -33,14 +32,11 @@ app.get("/ping", (_req, res) => res.json({ msg: "Ping Successful" }));
 const server = http.createServer(app);
 const io = socketIo(server, {
   cors: {
-    origin: process.env.REACT_APP_CLIENT_URL, 
+    origin: process.env.REACT_APP_CLIENT_URL,
     methods: ["GET", "POST"],
     credentials: true,
   },
 });
-
-
-
 
 // Database connection
 mongoose
@@ -50,8 +46,6 @@ mongoose
   })
   .then(() => console.log("DB Connection Successful"))
   .catch((err) => console.error(err.message));
-
-
 
 // Handle WebSocket connections
 global.onlineUsers = new Map();
@@ -93,9 +87,7 @@ io.on("connection", (socket) => {
   });
 });
 
-
-
 // Start server
-server.listen(PORT, () => {
+app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
