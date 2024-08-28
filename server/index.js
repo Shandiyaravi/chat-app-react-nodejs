@@ -12,25 +12,37 @@ const path = require("path");
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-
 const server = http.createServer(app);
 const io = socketIo(server, {
   cors: {
-    origin: process.env.REACT_APP_API_URL, 
+    origin: process.env.REACT_APP_API_URL, // Front-end URL
     methods: ["GET", "POST"],
-    transports: ["websocket", "polling"],
+    credentials: true, // Allows cookies and other credentials to be sent
   },
 });
 
+// CORS Middleware Configuration
 app.use(
   cors({
-    origin: process.env.REACT_APP_API_URL, // Ensure this matches your front-end URL
-    methods: ["GET", "POST"],
-    credentials: true, // Add this if your front-end needs credentials
+    origin: process.env.REACT_APP_API_URL, // Replace with the front-end URL
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    credentials: true, // Allows cookies and credentials to be sent
   })
 );
+
 app.use(express.json());
 
+// Handle preflight requests
+app.options(
+  "*",
+  cors({
+    origin: process.env.REACT_APP_API_URL,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    credentials: true,
+  })
+);
+
+// Database connection
 mongoose
   .connect(process.env.URL, {
     useNewUrlParser: true,
@@ -39,10 +51,14 @@ mongoose
   .then(() => console.log("DB Connection Successful"))
   .catch((err) => console.error(err.message));
 
+// Test route to verify server is up
 app.get("/ping", (_req, res) => res.json({ msg: "Ping Successful" }));
+
+// API routes
 app.use("/api/auth", authRoutes);
 app.use("/api/messages", messageRoutes);
 
+// Handle WebSocket connections
 global.onlineUsers = new Map();
 io.on("connection", (socket) => {
   console.log("New client connected:", socket.id);
@@ -58,6 +74,7 @@ io.on("connection", (socket) => {
       const sender = await User.findById(data.from);
       const receiver = await User.findById(data.to);
 
+      // Check if users are blocked
       if (
         sender.blockedUsers.includes(data.to) ||
         receiver.blockedUsers.includes(data.from)
@@ -81,12 +98,13 @@ io.on("connection", (socket) => {
   });
 });
 
-// Serve static files from the client build directory
+// Serve static files from the React client build directory
 app.use(express.static(path.join(__dirname, "../client/build")));
 app.get("*", (req, res) =>
   res.sendFile(path.join(__dirname, "../client/build", "index.html"))
 );
 
+// Start server
 server.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
