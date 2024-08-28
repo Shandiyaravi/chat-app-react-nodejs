@@ -34,8 +34,10 @@ export default function Chat() {
       socket.current = io(process.env.REACT_APP_API_URL);
       socket.current.emit("add-user", currentUser._id);
       return () => {
-        socket.current.disconnect();
-      };
+        if (socket.current) {
+          socket.current.disconnect();
+        }
+      }
     }
   }, [currentUser]);
 
