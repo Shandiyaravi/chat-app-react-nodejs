@@ -15,22 +15,20 @@ const PORT = process.env.PORT || 5000;
 const server = http.createServer(app);
 const io = socketIo(server, {
   cors: {
-    origin: process.env.REACT_APP_API_URL, // Front-end URL
+    origin: process.env.REACT_APP_API_URL,
     methods: ["GET", "POST"],
-    credentials: true, // Allows cookies and other credentials to be sent
+    credentials: true,
   },
 });
 
 // CORS Middleware Configuration
 app.use(
   cors({
-    origin: process.env.REACT_APP_API_URL, // Replace with the front-end URL
+    origin: process.env.REACT_APP_API_URL,
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    credentials: true, // Allows cookies and credentials to be sent
+    credentials: true,
   })
 );
-
-app.use(express.json());
 
 // Handle preflight requests
 app.options(
@@ -41,6 +39,8 @@ app.options(
     credentials: true,
   })
 );
+
+app.use(express.json());
 
 // Database connection
 mongoose

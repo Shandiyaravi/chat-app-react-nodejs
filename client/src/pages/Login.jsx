@@ -1,11 +1,10 @@
 import React, { useState, useCallback, useEffect } from "react";
 import axios from "axios";
 import styled from "styled-components";
-import logo from "../assets/logo.png"
+import logo from "../assets/logo.png";
 import { useNavigate, Link } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
 
 export default function Login() {
   const navigate = useNavigate();
@@ -49,10 +48,14 @@ export default function Login() {
       };
       try {
         console.log('Login URL:', loginRoute); // Debug log
-        const { data } = await axios.post(loginRoute, {
+        const response = await axios.post(loginRoute, {
           username,
           password,
+        }, {
+          withCredentials: true // Include credentials if needed
         });
+
+        const { data } = response;
 
         if (data.status === false) {
           toast.error(data.msg, toastOptions);
@@ -68,7 +71,7 @@ export default function Login() {
         console.error("Login error:", error);
       }
     }
-  }, [values, navigate, handleValidation,loginRoute]);
+  }, [values, navigate, handleValidation, loginRoute]);
 
   return (
     <>
