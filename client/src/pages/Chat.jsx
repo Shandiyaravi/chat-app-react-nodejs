@@ -3,7 +3,6 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { io } from "socket.io-client";
 import styled from "styled-components";
-import { allUsersRoute, host } from "../utils/APIRoutes";
 import ChatContainer from "../components/ChatContainer";
 import Contacts from "../components/Contacts";
 import Welcome from "../components/Welcome";
@@ -14,6 +13,8 @@ export default function Chat() {
   const [contacts, setContacts] = useState([]);
   const [currentChat, setCurrentChat] = useState(undefined);
   const [currentUser, setCurrentUser] = useState(undefined);
+  const apiUrl = process.env.REACT_APP_API_URL;
+  const allUsersRoute = `${apiUrl}/api/auth/allusers`;
 
   useEffect(() => {
     const getUser = async () => {
@@ -29,7 +30,7 @@ export default function Chat() {
 
   useEffect(() => {
     if (currentUser) {
-      socket.current = io(host);
+      socket.current = io(apiUrl);
       socket.current.emit("add-user", currentUser._id);
 
       // Cleanup function to disconnect socket on unmount
@@ -37,7 +38,7 @@ export default function Chat() {
         socket.current.disconnect();
       };
     }
-  }, [currentUser]);
+  }, [currentUser,apiUrl]);
 
   useEffect(() => {
     const fetchContacts = async () => {
@@ -57,7 +58,7 @@ export default function Chat() {
       }
     };
     fetchContacts();
-  }, [currentUser, navigate]);
+  }, [currentUser, navigate,allUsersRoute]);
 
   const handleChatChange = (chat) => {
     setCurrentChat(chat);

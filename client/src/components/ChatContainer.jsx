@@ -5,7 +5,7 @@ import Logout from "./Logout";
 import { v4 as uuidv4 } from "uuid";
 import axios from "axios";
 import Modal from "./Modal"
-import { sendMessageRoute, recieveMessageRoute, checkBlockStatusRoute, unblock, block } from "../utils/APIRoutes";
+
 
 export default function ChatContainer({ currentChat, socket }) {
   const [messages, setMessages] = useState([]);
@@ -14,6 +14,14 @@ export default function ChatContainer({ currentChat, socket }) {
   const [isBlocked, setIsBlocked] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [modalMessage, setModalMessage] = useState("");
+  const apiUrl = process.env.REACT_APP_API_URL;
+  const sendMessageRoute = `${apiUrl}/api/messages/addmsg`;
+  const recieveMessageRoute = `${apiUrl}/api/messages/getmsg`;
+  const checkBlockStatusRoute = `${apiUrl}/api/auth/check-block-status`;
+  const block = `${apiUrl}/api/auth/blockUser`;
+ const unblock = `${apiUrl}/api/auth/unblockUser`;
+
+
 
   // Fetch messages when the currentChat changes
   useEffect(() => {
@@ -28,7 +36,7 @@ export default function ChatContainer({ currentChat, socket }) {
       }
     };
     fetchMessages();
-  }, [currentChat]);
+  }, [currentChat,recieveMessageRoute]);
 
   // Set up socket listeners
   useEffect(() => {
@@ -75,7 +83,7 @@ export default function ChatContainer({ currentChat, socket }) {
       }
     };
     checkIfBlocked();
-  }, [currentChat]);
+  }, [currentChat,checkBlockStatusRoute]);
 
   // Handle sending messages
   const handleSendMsg = async (msg) => {
