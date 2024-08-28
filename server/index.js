@@ -13,7 +13,7 @@ const PORT = process.env.PORT || 5000;
 
 // CORS Configuration
 const corsOptions = {
-  origin: "https://chat-app-react-nodejs-ymsz.onrender.com", // Replace with your frontend URL
+  origin: "https://chat-app-react-nodejs-ymsz.onrender.com", 
   methods: ["GET", "POST"],
   allowedHeaders: ["Content-Type"],
 };

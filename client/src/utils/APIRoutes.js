@@ -1,6 +1,5 @@
-export const socketHost = "wss://chat-app-react-nodejs-1.onrender.com";
 
-// HTTP API URLs
+
 export const host = "https://chat-app-react-nodejs-1.onrender.com";
 export const loginRoute = `${host}/api/auth/login`;
 export const registerRoute = `${host}/api/auth/register`;
