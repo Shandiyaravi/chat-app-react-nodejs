@@ -15,8 +15,9 @@ const PORT = process.env.PORT || 5000;
 app.use(
   cors({
     origin: process.env.REACT_APP_CLIENT_URL,
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     credentials: true,
+    preflightContinue: false,
+    optionsSuccessStatus: 200
   })
 );
 
