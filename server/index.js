@@ -14,7 +14,7 @@ const PORT = process.env.PORT || 5000;
 // CORS middleware
 app.use(
   cors({
-    origin: process.env.REACT_APP_CLIENT_URL,
+    origin: "https://chat-app-react-nodejs-ymsz.onrender.com",
     credentials: true,
     optionsSuccessStatus: 200,
   })
