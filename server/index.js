@@ -7,16 +7,16 @@ const http = require("http");
 const socketIo = require("socket.io");
 require("dotenv").config();
 const User = require("./models/userModel");
-const path = require("path");
 
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+// CORS middleware
 app.use(
   cors({
     origin: process.env.REACT_APP_CLIENT_URL,
     credentials: true,
-    optionsSuccessStatus: 200
+    optionsSuccessStatus: 200,
   })
 );
 
@@ -51,7 +51,6 @@ mongoose
 global.onlineUsers = new Map();
 io.on("connection", (socket) => {
   console.log("New client connected:", socket.id);
-  global.chatSocket = socket;
 
   socket.on("add-user", (userId) => {
     console.log(`User ${userId} connected`);
@@ -83,11 +82,16 @@ io.on("connection", (socket) => {
 
   socket.on("disconnect", () => {
     console.log("Client disconnected:", socket.id);
-    global.onlineUsers.delete(socket.id);
+    for (let [userId, socketId] of global.onlineUsers) {
+      if (socketId === socket.id) {
+        global.onlineUsers.delete(userId);
+        break;
+      }
+    }
   });
 });
 
 // Start server
-app.listen(PORT, () => {
+server.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
