@@ -6,15 +6,12 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom";
 
-
 export default function SetAvatar() {
   const api = `https://api.multiavatar.com/4645646`;
   const navigate = useNavigate();
   const [avatars, setAvatars] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedAvatar, setSelectedAvatar] = useState(undefined);
-  
-  
 
   const toastOptions = {
     position: "bottom-right",
@@ -59,7 +56,10 @@ export default function SetAvatar() {
       const data = [];
       for (let i = 0; i < 4; i++) {
         const response = await axios.get(`${api}/${Math.round(Math.random() * 1000)}`);
-        data.push(response.data);
+        const svg = response.data;
+        // Convert SVG to base64 format
+        const base64Avatar = btoa(svg);
+        data.push(base64Avatar);
       }
       setAvatars(data);
       setIsLoading(false);
