@@ -55,14 +55,15 @@ export default function SetAvatar() {
   const fetchAvatars = async () => {
     try {
       const data = [];
+      const svgToBase64 = (svg) => {
+        const utf8Encoder = new TextEncoder();
+        const utf8Array = utf8Encoder.encode(svg);
+        return btoa(String.fromCharCode(...utf8Array));
+      };
       for (let i = 0; i < 4; i++) {
         const response = await axios.get(`${api}/${Math.round(Math.random() * 1000)}`);
         const svg = response.data;
-        
-        // Convert SVG to base64 format
-        // Use encodeURIComponent to ensure it's properly encoded
-        const base64Avatar = btoa(unescape(encodeURIComponent(svg)));
-        
+        const base64Avatar = svgToBase64(svg);
         data.push(base64Avatar);
       }
       setAvatars(data);
