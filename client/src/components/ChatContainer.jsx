@@ -180,7 +180,7 @@ export default function ChatContainer({ currentChat, socket }) {
             <h3>{currentChat.username}</h3>
           </div>
         </div>
-        <button onClick={toggleBlock}>
+        <button className="block-button" onClick={toggleBlock}>
           {isBlocked ? "Unblock" : "Block"} User
         </button>
         <Logout />
@@ -289,6 +289,30 @@ max-width:100%;
         background-color: #F5F5DC;
       }
     }
+      .block-button {
+  background-color: #ff4d4f; /* Red background to indicate danger */
+  color: white; /* White text for contrast */
+  border: none; /* Remove default border */
+  border-radius: 5px; /* Slightly rounded corners */
+  padding: 10px 20px; /* Padding for a comfortable click area */
+  font-size: 16px; /* Increase font size for readability */
+  font-weight: bold; /* Bold text */
+  cursor: pointer; /* Pointer cursor on hover */
+  transition: background-color 0.3s ease; /* Smooth transition on hover */
+}
+
+.block-button:hover {
+  background-color: #ff1a1c; /* Darker red on hover */
+}
+
+.block-button:active {
+  background-color: #e60000; /* Even darker red when clicked */
+}
+
+.block-button:disabled {
+  background-color: #ccc; /* Greyed out when disabled */
+  cursor: not-allowed; /* Not-allowed cursor when disabled */
+}
       @media screen and (max-width: 510px) {
         .username{
             h3{
@@ -307,5 +331,6 @@ max-width:100%;
         
       }
     }
+
   }
 `;
