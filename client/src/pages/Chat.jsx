@@ -88,13 +88,13 @@ const Container = styled.div`
   justify-content: center;
   gap: 1rem;
   align-items: center;
-  background-color: black; 
+  background-color: #4B0082; 
 `;
 
 const InnerContainer = styled.div`
-  height: 95vh;
-  width: 95vw;
-  background-color: #333333;
+  height: 90vh;
+  width: 80vw;
+  background-color: #00000076;
   display: grid;
   grid-template-columns: 35% 65%;
 

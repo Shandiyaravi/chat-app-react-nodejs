@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
 import ChatInput from "./ChatInput";
-import Logout from "./Logout";
 import { v4 as uuidv4 } from "uuid";
 import axios from "axios";
 import Modal from "./Modal"
@@ -183,7 +182,7 @@ export default function ChatContainer({ currentChat, socket }) {
         <button className="block-button" onClick={toggleBlock}>
           {isBlocked ? "Unblock" : "Block"} User
         </button>
-        <Logout />
+        
       </div>
       <div className="chat-messages">
         {messages.map((message) => {
