@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState,useMemo } from "react";
 import styled from "styled-components";
 import axios from "axios";
 import loader from "../assets/loader.webp";
@@ -13,13 +13,13 @@ export default function SetAvatar() {
   const [isLoading, setIsLoading] = useState(true);
   const [selectedAvatar, setSelectedAvatar] = useState(undefined);
 
-  const toastOptions = {
-    position: "bottom-right",
-    autoClose: 8000,
-    pauseOnHover: true,
-    draggable: true,
-    theme: "dark",
-  };
+  const toastOptions = useMemo(() => ({
+  position: "bottom-right",
+  autoClose: 8000,
+  pauseOnHover: true,
+  draggable: true,
+  theme: "dark",
+}), []);
 
   useEffect(() => {
     if (!localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY)) {
@@ -52,21 +52,31 @@ export default function SetAvatar() {
   };
 
   useEffect(() => {
-    const fetchAvatars = async () => {
+  const fetchAvatars = async () => {
+    try {
       const data = [];
       for (let i = 0; i < 4; i++) {
         const response = await axios.get(`${api}/${Math.round(Math.random() * 1000)}`);
         const svg = response.data;
+        
         // Convert SVG to base64 format
-        const base64Avatar = btoa(svg);
+        // Use encodeURIComponent to ensure it's properly encoded
+        const base64Avatar = btoa(unescape(encodeURIComponent(svg)));
+        
         data.push(base64Avatar);
       }
       setAvatars(data);
       setIsLoading(false);
-    };
+    } catch (error) {
+      console.error("Error fetching avatars:", error);
+      toast.error("Error fetching avatars. Please try again later.", toastOptions);
+      setIsLoading(false);
+    }
+  };
 
-    fetchAvatars();
-  }, [api]);
+  fetchAvatars();
+}, [api,toastOptions]);
+
 
   return (
     <>
