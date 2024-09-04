@@ -231,7 +231,7 @@ const Container = styled.div`
 
   .chat-header {
     display: flex;
-    background-color: #1c1c1c;
+    background-color: #333333;
     justify-content: space-between;
     align-items: center;
     padding: 2rem 1rem;
@@ -272,23 +272,22 @@ const Container = styled.div`
         right: 0;
         padding:0.5rem;
         top: 2rem;
-        background-color: #444;
+        background-color: white;
         border-radius: 0.5rem;
         overflow: hidden;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        
 
         button {
         margin:1rem 0.5rem;
           display: block;
           max-width: 100%;
-          padding: 0.5rem 0.5rem;
-          background: none;
-          border: 1px solid black;
+          padding: 0.5rem 1rem;
           border-radius:10px;
-          color: white;
           text-align: right;
           cursor: pointer;
-
+          border:none;
+          background-image: linear-gradient( 135deg, #F97794 10%, #623AA2 100%);
           &:hover {
             background-color: #555;
           }
@@ -298,11 +297,12 @@ const Container = styled.div`
   }
 
   .chat-messages {
-    padding: 2rem 0.5rem;
+    padding: 2rem 1rem;
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
     overflow: auto;
+    background:black;
 
     &::-webkit-scrollbar {
       width: 0.2rem;
@@ -321,10 +321,10 @@ const Container = styled.div`
       .content {
         max-width: 50%;
         overflow-wrap: break-word;
-        padding: 0.5rem;
+        padding: 0.8rem;
         font-size: 1rem;
         border-radius: 1rem;
-        color: #333333;
+        color: white;
       }
     }
 
@@ -332,7 +332,10 @@ const Container = styled.div`
       justify-content: flex-end;
 
       .content {
-        background-color: #F5F5DC;
+      background: #4568DC;  
+background: -webkit-linear-gradient(to right, #B06AB3, #4568DC);  
+background: linear-gradient(to right, #B06AB3, #4568DC); 
+
       }
     }
 
@@ -340,7 +343,7 @@ const Container = styled.div`
       justify-content: flex-start;
 
       .content {
-        background-color: #F5F5DC;
+background-image: radial-gradient( circle farthest-corner at 13.8% 22.8%,  rgba(237,141,116,1) 0%, rgba(241,144,208,1) 90% );
       }
     }
   }

@@ -88,9 +88,7 @@ const Container = styled.div`
   justify-content: center;
   gap: 1rem;
   align-items: center;
-  background: rgb(63,94,251);
-background: radial-gradient(circle, rgba(63,94,251,1) 0%, rgba(252,70,107,1) 100%);
-`;
+background-image: linear-gradient( 135deg, #F97794 10%, #623AA2 100%);`;
 
 const InnerContainer = styled.div`
   height: 90vh;
