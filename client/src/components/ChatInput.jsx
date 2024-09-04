@@ -106,12 +106,12 @@ const Container = styled.div`
     background-color: #ffffff34;
     input {
       width: 90%;
-      height: 60%;
+      height: 70%;
       background-color: transparent;
       color: white;
       border: none;
       padding-left: 1rem;
-      font-size: 1.3rem;
+      font-size: 1rem;
 
       &::selection {
         background-color: #9a86f3;
@@ -122,20 +122,20 @@ const Container = styled.div`
     }
     button {
       padding: 0.3rem 0.5rem;
-      border-radius: 2rem;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      background-color: #9a86f3;
-      border: none;
+      background-color: transparent;
+      border: none; /* Ensure there is no border */
+      cursor: pointer; /* Ensure the cursor changes to a pointer on hover */
+      svg {
+        font-size: 1.5rem;
+        color: white;
+      }
+      
       
       @media screen and (max-width: 720px) {
-        svg {
-          font-size: 0.5rem;
-        }
-      }
+      
+      
       svg {
-        font-size: 2rem;
+        font-size: 1rem;
         color: white;
       }
     }

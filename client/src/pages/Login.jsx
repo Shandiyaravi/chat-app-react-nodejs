@@ -135,19 +135,19 @@ const FormContainer = styled.div`
     padding: 2rem 5rem;
     input {
       background: transparent;
-      border: 0.1rem solid #997af0;
+      border: 0.1rem solid #623AA2;
       padding: 1rem;
       border-radius: 0.4rem;
       color: white;
       width: 100%;
       font-size: 1rem;
       &:focus {
-        border: 0.1rem solid #FF66B2;
+        border: 0.1rem solid #F97794;
         outline: none;
       }
     }
     button {
-      background-color: #FF66B2;
+          background-image: linear-gradient( 135deg, #F97794 10%, #623AA2 100%);
       color: white;
       border: none;
       padding: 1rem;
@@ -155,9 +155,6 @@ const FormContainer = styled.div`
       font-size: 1rem;
       cursor: pointer;
       transition: 0.5s ease-in-out;
-      &:hover {
-        background-color: #FF007F;
-      }
     }
     span {
       color: white;
