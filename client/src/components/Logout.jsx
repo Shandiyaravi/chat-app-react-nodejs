@@ -46,12 +46,12 @@ const Button = styled.button`
   justify-content: center;
   align-items: center;
   padding: 0.5rem;
-  border-radius: 0.5rem;
+  border-radius: 1rem;
   background-color: #ff66b2;
   border: none;
   cursor: pointer;
   svg {
-    font-size: 1.3rem;
+    font-size: 1.5rem;
     color: #ebe7ff;
   }
 `;

@@ -3,8 +3,8 @@ import styled from "styled-components";
 import ChatInput from "./ChatInput";
 import { v4 as uuidv4 } from "uuid";
 import axios from "axios";
-import Modal from "./Modal"
-
+import Modal from "./Modal";
+import Logout from "./Logout"; // Import your Logout component
 
 export default function ChatContainer({ currentChat, socket }) {
   const [messages, setMessages] = useState([]);
@@ -13,20 +13,20 @@ export default function ChatContainer({ currentChat, socket }) {
   const [isBlocked, setIsBlocked] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [modalMessage, setModalMessage] = useState("");
+  const [dropdownOpen, setDropdownOpen] = useState(false); 
+
   const sendMessageRoute = `${process.env.REACT_APP_API_URL}/api/messages/addmsg`;
-  const recieveMessageRoute = `${process.env.REACT_APP_API_URL}/api/messages/getmsg`;
+  const receiveMessageRoute = `${process.env.REACT_APP_API_URL}/api/messages/getmsg`;
   const checkBlockStatusRoute = `${process.env.REACT_APP_API_URL}/api/auth/check-block-status`;
   const block = `${process.env.REACT_APP_API_URL}/api/auth/blockUser`;
- const unblock = `${process.env.REACT_APP_API_URL}/api/auth/unblockUser`;
-
-
+  const unblock = `${process.env.REACT_APP_API_URL}/api/auth/unblockUser`;
 
   // Fetch messages when the currentChat changes
   useEffect(() => {
     const fetchMessages = async () => {
       const user = JSON.parse(localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY));
       if (user && currentChat) {
-        const response = await axios.post(recieveMessageRoute, {
+        const response = await axios.post(receiveMessageRoute, {
           from: user._id,
           to: currentChat._id,
         });
@@ -34,7 +34,7 @@ export default function ChatContainer({ currentChat, socket }) {
       }
     };
     fetchMessages();
-  }, [currentChat,recieveMessageRoute]);
+  }, [currentChat, receiveMessageRoute]);
 
   // Set up socket listeners
   useEffect(() => {
@@ -42,7 +42,7 @@ export default function ChatContainer({ currentChat, socket }) {
 
     if (currentSocket) {
       currentSocket.on("msg-recieve", (msg) => {
-          console.log("Message received:", msg); 
+        console.log("Message received:", msg); 
         if (!isBlocked) {
           setArrivalMessage({ fromSelf: false, message: msg });
         }
@@ -54,7 +54,7 @@ export default function ChatContainer({ currentChat, socket }) {
         currentSocket.off("msg-recieve");
       }
     };
-  }, [isBlocked, socket]); 
+  }, [isBlocked, socket]);
 
   // Update messages with the arrivalMessage
   useEffect(() => {
@@ -81,7 +81,7 @@ export default function ChatContainer({ currentChat, socket }) {
       }
     };
     checkIfBlocked();
-  }, [currentChat,checkBlockStatusRoute]);
+  }, [currentChat, checkBlockStatusRoute]);
 
   // Handle sending messages
   const handleSendMsg = async (msg) => {
@@ -162,8 +162,10 @@ export default function ChatContainer({ currentChat, socket }) {
     }
   };
 
-
-
+  // Handle dropdown menu visibility
+  const toggleDropdown = () => {
+    setDropdownOpen(!dropdownOpen);
+  };
 
   return (
     <Container>
@@ -172,34 +174,42 @@ export default function ChatContainer({ currentChat, socket }) {
           <div className="avatar">
             <img
               src={`data:image/svg+xml;base64,${currentChat.avatarImage}`}
-              alt=""
+              alt="avatar"
             />
           </div>
           <div className="username">
             <h3>{currentChat.username}</h3>
           </div>
         </div>
-        <button className="block-button" onClick={toggleBlock}>
-          {isBlocked ? "Unblock" : "Block"} User
-        </button>
-        
+        <div className="dropdown">
+          <button className="dropdown-toggle" onClick={toggleDropdown}>
+            ⋮
+          </button>
+          {dropdownOpen && (
+            <div className="dropdown-menu">
+              <button onClick={toggleBlock}>
+                {isBlocked ? "Unblock" : "Block"} 
+              </button>
+              <Logout /> 
+            </div>
+          )}
+        </div>
       </div>
+
       <div className="chat-messages">
-        {messages.map((message) => {
-          return (
-            <div ref={scrollRef} key={uuidv4()}>
-              <div
-                className={`message ${
-                  message.fromSelf ? "sended" : "recieved"
-                }`}
-              >
-                <div className="content">
-                  <p>{message.message}</p>
-                </div>
+        {messages.map((message) => (
+          <div ref={scrollRef} key={uuidv4()}>
+            <div
+              className={`message ${
+                message.fromSelf ? "sended" : "recieved"
+              }`}
+            >
+              <div className="content">
+                <p>{message.message}</p>
               </div>
             </div>
-          );
-        })}
+          </div>
+        ))}
       </div>
       <ChatInput handleSendMsg={handleSendMsg} />
       {modalVisible && (
@@ -213,59 +223,101 @@ export default function ChatContainer({ currentChat, socket }) {
 }
 
 const Container = styled.div`
-max-width:100%;
+  max-width: 100%;
   display: grid;
   grid-template-rows: 15% 70% 15%;
   overflow-y: hidden;
-    overflow-x: hidden; 
-    
-    
- 
-  
+  overflow-x: hidden;
+
   .chat-header {
     display: flex;
-     background-color: #1c1c1c;
+    background-color: #1c1c1c;
     justify-content: space-between;
     align-items: center;
     padding: 2rem 1rem;
-    
-    
+
     .user-details {
       display: flex;
       align-items: center;
       gap: 0.5rem;
+
       .avatar {
         img {
           height: 2rem;
         }
       }
+
       .username {
         h3 {
-          font-size:1rem;
+          font-size: 1rem;
           color: white;
           text-transform: uppercase;
         }
       }
     }
+
+    .dropdown {
+      position: relative;
+
+      .dropdown-toggle {
+        background: none;
+        border: none;
+        color: white;
+        font-size: 1.5rem;
+        cursor: pointer;
+      }
+
+      .dropdown-menu {
+        position: absolute;
+        right: 0;
+        padding:0.5rem;
+        top: 2rem;
+        background-color: #444;
+        border-radius: 0.5rem;
+        overflow: hidden;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+
+        button {
+        margin:1rem 0.5rem;
+          display: block;
+          max-width: 100%;
+          padding: 0.5rem 0.5rem;
+          background: none;
+          border: 1px solid black;
+          border-radius:10px;
+          color: white;
+          text-align: right;
+          cursor: pointer;
+
+          &:hover {
+            background-color: #555;
+          }
+        }
+      }
+    }
   }
+
   .chat-messages {
-    
     padding: 2rem 0.5rem;
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
     overflow: auto;
+
     &::-webkit-scrollbar {
       width: 0.2rem;
+      
       &-thumb {
         background-color: #ffffff39;
         width: 0.2rem;
         border-radius: 1rem;
       }
     }
+
     .message {
       display: flex;
       align-items: center;
+
       .content {
         max-width: 50%;
         overflow-wrap: break-word;
@@ -273,63 +325,39 @@ max-width:100%;
         font-size: 1rem;
         border-radius: 1rem;
         color: #333333;
-        
       }
     }
+
     .sended {
       justify-content: flex-end;
+
       .content {
         background-color: #F5F5DC;
       }
     }
+
     .recieved {
       justify-content: flex-start;
+
       .content {
         background-color: #F5F5DC;
       }
     }
-      .block-button {
-  background-color: #ff4d4f; /* Red background to indicate danger */
-  color: white; /* White text for contrast */
-  border: none; /* Remove default border */
-  border-radius: 5px; /* Slightly rounded corners */
-  padding: 10px 20px; /* Padding for a comfortable click area */
-  font-size: 16px; /* Increase font size for readability */
-  font-weight: bold; /* Bold text */
-  cursor: pointer; /* Pointer cursor on hover */
-  transition: background-color 0.3s ease; /* Smooth transition on hover */
-}
+  }
 
-.block-button:hover {
-  background-color: #ff1a1c; /* Darker red on hover */
-}
-
-.block-button:active {
-  background-color: #e60000; /* Even darker red when clicked */
-}
-
-.block-button:disabled {
-  background-color: #ccc; /* Greyed out when disabled */
-  cursor: not-allowed; /* Not-allowed cursor when disabled */
-}
-      @media screen and (max-width: 510px) {
-        .username{
-            h3{
-              font-size:0.5rem;
-            }}
-        .message {
-          display: flex;
-          align-items: center;
-        .content {
-          max-width: 45%;
-        overflow-wrap: break-word;
-        padding: 0.7rem;
-        font-size: 0.8rem;
-        border-radius: 1rem;
-        color: #333333;
-        
+  @media screen and (max-width: 510px) {
+    .username {
+      h3 {
+        font-size: 0.5rem;
       }
     }
 
+    .message {
+      .content {
+        max-width: 45%;
+        padding: 0.7rem;
+        font-size: 0.8rem;
+      }
+    }
   }
 `;

@@ -51,7 +51,7 @@ export default function Login() {
           username,
           password,
         }, {
-          withCredentials: true // Include credentials if needed
+          withCredentials: true 
         });
 
         const { data } = response;
