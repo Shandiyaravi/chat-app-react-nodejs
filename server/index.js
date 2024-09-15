@@ -14,7 +14,7 @@ const PORT = process.env.PORT || 5000;
 // CORS middleware
 app.use(
   cors({
-    origin: "http://localhost:3000", // Ensure this matches your client URL
+    origin: "https://chat-app-react-nodejs-ymsz.onrender.com", // Ensure this matches your client URL
     credentials: true,
     optionsSuccessStatus: 200,
   })
@@ -32,7 +32,7 @@ app.get("/ping", (_req, res) => res.json({ msg: "Ping Successful" }));
 const server = http.createServer(app);
 const io = socketIo(server, {
   cors: {
-    origin: "http://localhost:3000", // Ensure this matches your client URL
+    origin: "https://chat-app-react-nodejs-ymsz.onrender.com", // Ensure this matches your client URL
     methods: ["GET", "POST"],
     credentials: true,
   },
